@@ -1,0 +1,80 @@
+Objetivo
+- Consolidar caminhos, hosts, serviços e variáveis necessárias para operar App, Site e Automação sem expor segredos.
+
+Infraestrutura
+- VPS: host 69.6.220.62, porta SSH 22022
+- Painéis: https://coolify.fontedevida.org, https://n8n.fontedevida.org, https://chatwoot.fontedevida.org
+- DNS/TLS: certificados Let’s Encrypt ativos em todos os subdomínios
+
+Acesso SSH
+- Usuário: deploy (acesso por chave pública)
+- Chave privada: armazenada localmente no Windows (ex.: C:\Users\SEU_USUARIO\.ssh\trae-ai.ppk)
+- Hardened: PermitRootLogin no, PasswordAuthentication no
+- Segredos: nunca versionar a chave privada; manter em gerenciador de senhas
+
+PostgreSQL
+- Host: 69.6.220.62
+- Porta: 5433
+- Bancos dedicados: n8n, chatwoot (gateway futuro opcional)
+- Credenciais: manter no cofre de segredos do Coolify (não versionar)
+
+Firebase
+- Projeto: FonteNews (fontenews-877a3)
+- Hosting: https://fontenews-877a3.web.app
+- SDK Web: apiKey, authDomain, projectId, storageBucket, appId, measurementId
+- Admin credentials: manter arquivo de serviço e chaves somente no cofre do servidor (não versionar)
+
+Serviços e Variáveis (referências)
+- Coolify
+  - Apps gerenciados: n8n, chatwoot, api-gateway (planejado)
+  - Armazenar variáveis/segredos apenas no ambiente do app
+- n8n
+  - Host: n8n.fontedevida.org, protocolo https
+  - Autenticação de webhooks: N8N_BASIC_AUTH_ACTIVE, N8N_BASIC_AUTH_USER, N8N_BASIC_AUTH_PASSWORD
+  - WEBHOOK_URL: https://n8n.fontedevida.org
+  - N8N_ENCRYPTION_KEY: chave aleatória longa
+  - Banco: DB_TYPE postgresdb e parâmetros de Postgres dedicados
+  - Variáveis usadas pelos workflows
+    - GATEWAY_API_URL
+    - API_JWT_TOKEN
+    - CHATWOOT_API_URL
+    - CHATWOOT_API_TOKEN
+    - CHATWOOT_ACCOUNT_ID
+    - CHATWOOT_INBOX_ID
+- Chatwoot
+  - API Access Token: manter somente no painel e em segredos de ambiente (não versionar)
+  - Inbox Website Chat e, opcional, WhatsApp via parceiro
+
+Workflows n8n (importar pelo painel)
+- Sophia/n8n/workflow_inscricoes.json
+  - Webhook POST /sophia/forms/submit
+  - Normaliza campos e envia para /api/forms/submit (Bearer)
+  - Cria conversa no Chatwoot
+- Sophia/n8n/workflow_agendamentos.json
+  - Webhook POST /sophia/appointments/create
+  - Insere agendamento em Postgres e retorna ID
+- Sophia/n8n/workflow_oracao.json
+  - Webhook POST /sophia/prayers/submit
+  - Valida privacy, envia para /api/prayers (Bearer) e notifica Chatwoot
+
+Contratos de API
+- Sophia/api/openapi.yaml
+  - Endpoints: /api/maintenance/toggle, /api/announcements, /api/youtube-live/sync, /api/prayers, /api/forms/submit, /api/appointments
+  - Segurança: bearerAuth (JWT)
+
+Operação Manual e Automação
+- O App mantém páginas de Gerenciamento para ações manuais
+- Os workflows podem ser acionados por webhook ou manualmente no n8n
+- Endpoints do gateway espelham as ações manuais sem substituí-las
+
+Segurança
+- Nunca commitar senhas, tokens, chaves privadas no repositório
+- Guardar segredos em: Coolify (env), n8n (env), Chatwoot (painel), gerenciador de senhas
+- Rotacionar segredos periodicamente e após exposição
+
+Checklist para continuar
+- Confirmar acesso aos painéis (Coolify, n8n, Chatwoot)
+- Importar workflows em n8n e preencher variáveis de ambiente
+- Validar webhooks com auth básica e respostas 200
+- Implementar ou apontar API Gateway conforme openapi.yaml (quando autorizado)
+- Manter backups automáticos de Postgres e volumes no Coolify

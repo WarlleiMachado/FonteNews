@@ -1,0 +1,435 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras de segurança adequadas - Seguindo recomendações da IA do Firebase
+    // Leitura livre para todos, escrita apenas para usuários autenticados
+    
+    // Anúncios/Avisos
+    match /announcements/{announcementId} {
+      allow read: if true; // Qualquer um pode ler anúncios
+      // Create: apenas administradores podem criar
+      allow create: if request.auth != null && 
+        request.resource.data.authorFirebaseUid == request.auth.uid &&
+        (
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        );
+      // Update: apenas administradores podem atualizar
+      allow update: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+      // Delete: apenas administradores podem excluir
+      allow delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Cultos
+    match /cultos/{cultoId} {
+      allow read: if true; // Qualquer um pode ler cultos
+      // Create: require the client to set authorFirebaseUid equal to their auth uid
+      allow create: if request.auth != null && request.resource.data.authorFirebaseUid == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.authorFirebaseUid == request.auth.uid || request.auth.token.admin == true);
+      // EXCLUSÃO: Apenas administradores podem excluir
+      allow delete: if request.auth != null && 
+        (request.auth.token.admin == true ||
+         request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+         request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com');
+    }
+    
+    // Roteiros/Scripts - ATUALIZADO PARA NOVA COLEÇÃO
+    match /roteiros/{roteiroId} {
+      allow read: if true; // Qualquer um pode ler roteiros
+      // Create: require the client to set authorFirebaseUid equal to their auth uid
+      allow create: if request.auth != null && request.resource.data.authorFirebaseUid == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.authorFirebaseUid == request.auth.uid || request.auth.token.admin == true);
+      // EXCLUSÃO: Apenas administradores podem excluir
+      allow delete: if request.auth != null && 
+        (request.auth.token.admin == true ||
+         request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+         request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com');
+    }
+    
+    // Scripts (mantendo compatibilidade com coleção antiga)
+    match /scripts/{scriptId} {
+      allow read: if true; // Qualquer um pode ler roteiros
+      // Create: require the client to set authorFirebaseUid equal to their auth uid
+      allow create: if request.auth != null && request.resource.data.authorFirebaseUid == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.authorFirebaseUid == request.auth.uid || request.auth.token.admin == true);
+      // EXCLUSÃO: Apenas administradores podem excluir
+      allow delete: if request.auth != null && 
+        (request.auth.token.admin == true ||
+         request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+         request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com');
+    }
+    
+    // Mensagens
+    match /messages/{messageId} {
+      allow read: if true; // Qualquer um pode ler mensagens
+      // Create: require the client to set authorFirebaseUid equal to their auth uid
+      allow create: if request.auth != null && request.resource.data.authorFirebaseUid == request.auth.uid;
+      // Update/Delete: permitido para remetente, destinatários e administradores
+      // Campos auxiliares esperados no documento: senderFirebaseUid, recipientFirebaseUids (array)
+      allow update, delete: if request.auth != null && (
+        // Remetente autenticado pelo firebaseUid
+        resource.data.senderFirebaseUid == request.auth.uid ||
+        // Destinatários autenticados pelo firebaseUid
+        (resource.data.recipientFirebaseUids != null && request.auth.uid in resource.data.recipientFirebaseUids) ||
+        // Fallback robusto: mapear o usuário autenticado ao authorizedUserId em /users/{uid}
+        // e validar contra os campos de domínio (senderId/recipientIds) já presentes no documento
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId == resource.data.senderId ||
+        (resource.data.recipientIds != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId in resource.data.recipientIds) ||
+        // Administradores continuam com permissão total
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Novo sistema de Chat (salas entre usuários autorizados)
+    match /chats/{chatId} {
+      // Somente participantes podem ler ou escrever na sala
+      allow read, write: if request.auth != null && (
+        // Participantes já cadastrados na sala
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId in resource.data.participants ||
+        // Na criação, validar contra os participantes enviados
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId in request.resource.data.participants
+      );
+      
+      // Subcoleção de mensagens do chat
+      match /messages/{messageId} {
+        // Somente participantes podem ler mensagens
+        allow read: if request.auth != null && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId in get(/databases/$(database)/documents/chats/$(chatId)).data.participants
+        );
+
+        // Enviar mensagem: apenas participantes e o senderId deve ser o próprio
+        allow create: if request.auth != null && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId in get(/databases/$(database)/documents/chats/$(chatId)).data.participants &&
+          request.resource.data.senderId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId
+        );
+
+        // Excluir mensagem: remetente ou administradores
+        allow delete: if request.auth != null && (
+          resource.data.senderId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.authorizedUserId ||
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        );
+      }
+    }
+    
+    // Solicitações de Liderança (permite criação sem autenticação para novos usuários)
+    match /leaderRequests/{requestId} {
+      allow read: if true; // Qualquer um pode ler solicitações
+      allow write: if true; // Qualquer um pode criar solicitações (para novos usuários)
+    }
+    
+    // Ministérios/Departamentos
+    match /ministryDepartments/{departmentId} {
+      allow read: if true; // Qualquer um pode ler departamentos
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    // Configurações
+    match /settings/{settingId} {
+      allow read: if true; // Qualquer um pode ler configurações
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    // Usuários Autorizados - REGRA CRÍTICA QUE ESTAVA FALTANDO
+    match /authorizedUsers/{userId} {
+      allow read: if true; // Qualquer um pode ler usuários autorizados (para verificação de login)
+      // Criação: qualquer usuário autenticado pode criar um registro (p.ex. solicitações)
+      allow create: if request.auth != null;
+      // Atualização/Deleção: somente o próprio usuário (comparando firebaseUid), ou um admin
+      // Observação: admin pode ser um custom claim 'admin', e-mails administrativos listados abaixo, ou possuir role 'admin' registrada em /users/{uid}
+      allow update, delete: if request.auth != null && (
+        resource.data.firebaseUid == request.auth.uid ||
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        // Novo critério: verificar role 'admin' em /users/{uid}
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Usuários Online - Para status em tempo real
+    match /onlineUsers/{userId} {
+      allow read: if true; // Qualquer um pode ler status online
+      allow write: if request.auth != null; // Apenas usuários logados podem atualizar status
+    }
+    
+    // Usuários do sistema
+    match /users/{userId} {
+      allow read: if request.auth != null; // Apenas usuários logados podem ler perfis
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever perfis
+    }
+    
+    // Logs de auditoria
+    match /audit_logs/{logId} {
+      allow read: if request.auth != null; // Apenas usuários logados podem ler logs
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever logs
+    }
+    
+    // --- REGRAS ADICIONAIS PARA COLEÇÕES QUE PODEM SER CRIADAS ---
+    
+    // Eventos
+    match /eventos/{eventoId} {
+      allow read: if true; // Qualquer um pode ler eventos
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    // Avisos (alias para announcements)
+    match /avisos/{avisoId} {
+      allow read: if true; // Qualquer um pode ler avisos
+      // Escrita apenas por administradores
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Ministérios (alias para ministryDepartments)
+    match /ministerios/{ministerioId} {
+      allow read: if true; // Qualquer um pode ler ministérios
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+
+    // Mural de Oração — Pedidos
+    match /prayers/{prayerId} {
+      // Leitura pública do mural
+      allow read: if true;
+      // Criação aberta (permite pedidos anônimos), com validação básica de campos obrigatórios
+      allow create: if
+        request.resource.data.name is string &&
+        request.resource.data.text is string &&
+        // Permitir novo fluxo de aprovação (pending/approved/rejected/archived) e compatibilidade ('active')
+        request.resource.data.status in ['pending','approved','rejected','archived','active'];
+      // Atualização: permitir duas situações
+      // 1) Atualizações gerais: dono autenticado ou administradores
+      // 2) Engajamento autenticado (prayCount/prayedBy)
+      // 3) Engajamento anônimo (prayCount/prayedByAnon)
+      allow update: if (
+        // Caso 1: dono ou admin pode atualizar qualquer campo (requer auth)
+        (request.auth != null && (
+          (resource.data.ownerUserId == request.auth.uid) ||
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        )) ||
+        // Caso 2: somente campos de engajamento autenticado
+        (request.auth != null &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['prayCount', 'prayedBy']) && (
+            (
+              // Adição autenticada
+              request.resource.data.prayedBy.size() == resource.data.prayedBy.size() + 1 &&
+              (request.auth.uid in request.resource.data.prayedBy) &&
+              !(request.auth.uid in resource.data.prayedBy)
+            ) || (
+              // Remoção autenticada (se permitido)
+              get(/databases/$(database)/documents/prayer_settings/default).data.allowUnpray == true &&
+              request.resource.data.prayedBy.size() == resource.data.prayedBy.size() - 1 &&
+              !(request.auth.uid in request.resource.data.prayedBy) &&
+              (request.auth.uid in resource.data.prayedBy)
+            )
+          )
+        )
+      );
+
+      // Exclusão: apenas o dono autenticado ou administradores
+      allow delete: if request.auth != null && (
+        (resource.data.ownerUserId == request.auth.uid) ||
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Comentários em Pedidos de Oração
+    match /prayer_comments/{commentId} {
+      allow read: if true;
+      // Criação: EXIGE USUÁRIO AUTENTICADO (usuário anônimo não pode comentar)
+      allow create: if (
+        request.auth != null &&
+        request.resource.data.prayerId is string &&
+        request.resource.data.text is string &&
+        request.resource.data.userName is string &&
+        request.resource.data.userId is string &&
+        request.resource.data.userId == request.auth.uid
+      );
+      // Exclusão: apenas administradores
+      allow delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Configurações do Mural de Oração
+    match /prayer_settings/{settingsId} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Outbox de E-mails (gatilho de notificação)
+    match /outbox_emails/{emailId} {
+      // Apenas leitura por administradores
+      allow read: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+      // Criação aberta: permite que o cliente registre notificação de novo pedido
+      allow create: if
+        request.resource.data.to is list &&
+        request.resource.data.subject is string &&
+        request.resource.data.body is string;
+      // Atualização/Exclusão: apenas administradores
+      allow update, delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    // Formulários dinâmicos (Fonte Add)
+    match /forms/{formId} {
+      // Leitura: pública somente quando ativo; admins sempre
+      allow read: if (
+        resource.data.status == 'active' ||
+        (request.auth != null && (
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        ))
+      );
+      // Escrita: somente administradores
+      allow create, update, delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Submissões de formulários (Fonte Add)
+    match /form_submissions/{submissionId} {
+      // Criação aberta (visitantes podem enviar) com validação básica
+      allow create: if (
+        request.resource.data.popupId is string &&
+        request.resource.data.data is map &&
+        request.resource.data.status in ['pending','approved','rejected']
+      );
+      // Leitura: autor autenticado ou administradores
+      allow read: if (
+        (request.auth != null && resource.data.submittedByUid == request.auth.uid) ||
+        (request.auth != null && (
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        ))
+      );
+      // Atualização/Exclusão: apenas administradores
+      allow update, delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Curso-Slide: slides dos cursos
+    match /course_slides/{slideId} {
+      // Leitura pública apenas de slides ativos; admins veem tudo
+      allow read: if (
+        resource.data.active == true ||
+        (request.auth != null && (
+          request.auth.token.admin == true ||
+          request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+          request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        ))
+      );
+      // Criação/Atualização/Exclusão apenas por administradores
+      allow create, update, delete: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Configurações globais do Curso-Slide
+    match /course_slide_settings/{settingsId} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Fallback para outras coleções futuras
+    match /{document=**} {
+      allow read: if true; // Leitura livre para outros documentos
+      allow write: if request.auth != null; // Escrita apenas para usuários logados
+    }
+    // Presença anônima: leitura pública e escrita sem autenticação para contagem de presença
+    match /anonOnlineUsers/{docId} {
+      allow read: if true;
+      allow write: if true; // Permitir presença anônima (sem autenticação)
+    }
+
+    // Visitantes por dia: leitura pública e escrita aberta para contagem diária idempotente
+    match /visitorDaily/{dateId} {
+      allow read: if true;
+      allow write: if true; // Permitir incrementos por qualquer visitante
+
+      // Subcoleção de detalhes por visitante (chave exclusiva por dia)
+      match /details/{visitorKey} {
+        allow read: if true;
+        allow write: if true; // Registrar primeira visita do dia
+      }
+    }
+
+    // Presença de leitores autenticados: leitura pública e escrita apenas autenticada
+    match /readerOnlineUsers/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Fallback para outras coleções futuras
+    match /{document=**} {
+      allow read: if true; // Leitura livre para outros documentos
+      allow write: if request.auth != null; // Escrita apenas para usuários logados
+    }
+  }
+}

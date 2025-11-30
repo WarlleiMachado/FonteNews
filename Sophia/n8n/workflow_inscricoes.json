@@ -1,0 +1,141 @@
+{
+  "name": "Sophia - Inscricoes",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sophia/forms/submit",
+        "responseMode": "onReceived"
+      },
+      "id": "Webhook_Forms",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        280,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const b = $json;\nconst required = ['name','email','phone','formId'];\nfor (const k of required) {\n  if (!b[k] || String(b[k]).trim()==='') {\n    throw new Error(`missing_${k}`);\n  }\n}\nreturn [{ json: {\n  name: String(b.name).trim(),\n  email: String(b.email).trim(),\n  phone: String(b.phone).trim(),\n  formId: String(b.formId).trim(),\n  payload: b\n}}];"
+      },
+      "id": "Normalize",
+      "name": "Normalize",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        520,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$env.GATEWAY_API_URL}}/api/forms/submit",
+        "jsonParameters": true,
+        "options": {
+          "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {{$env.API_JWT_TOKEN}}"
+          },
+          "retryOnFail": true,
+          "maxRetries": 2
+        },
+        "body": "={ $json }"
+      },
+      "id": "StoreAPI",
+      "name": "Store API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        760,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$env.CHATWOOT_API_URL}}/api/v1/accounts/{{$env.CHATWOOT_ACCOUNT_ID}}/conversations",
+        "jsonParameters": true,
+        "options": {
+          "headers": {
+            "Content-Type": "application/json",
+            "api_access_token": "{{$env.CHATWOOT_API_TOKEN}}"
+          },
+          "retryOnFail": true,
+          "maxRetries": 2
+        },
+        "body": "={ { source_id: $json.phone, inbox_id: {{$env.CHATWOOT_INBOX_ID}}, additional_attributes: $json, status: 'open' } }"
+      },
+      "id": "ChatwootCreate",
+      "name": "Chatwoot Create",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1000,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "responseData": "={ { ok: true, received: $json } }",
+        "responseCode": 200
+      },
+      "id": "Respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize": {
+      "main": [
+        [
+          {
+            "node": "Store API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store API": {
+      "main": [
+        [
+          {
+            "node": "Chatwoot Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatwoot Create": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

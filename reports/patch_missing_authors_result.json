@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2025-09-29T17:31:27.829Z",
+  "results": [
+    {
+      "collection": "cultos",
+      "docId": "D6Q8DKwuvDbHWvhZKiOs",
+      "status": "patched",
+      "updates": {
+        "authorId": "8COwk6X80udVGdGuqS2Q",
+        "authorFirebaseUid": "NVwtRvafRsXTU7DHdmKlvpJQJGr1"
+      }
+    },
+    {
+      "collection": "scripts",
+      "docId": "RAIW3gcP5fivmNr85n8T",
+      "status": "patched",
+      "updates": {
+        "authorFirebaseUid": "NVwtRvafRsXTU7DHdmKlvpJQJGr1"
+      }
+    }
+  ]
+}

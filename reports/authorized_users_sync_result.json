@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2025-09-29T07:14:00.412Z",
+  "changes": [
+    {
+      "id": "8COwk6X80udVGdGuqS2Q",
+      "email": "secretaria.adfdevidalaranjeiras@gmail.com",
+      "currentFirebaseUid": "NVwtRvafRsXTU7DHdmKlvpJQJGr1",
+      "willSetFirebaseUid": null,
+      "action": "skip-already-has-uid",
+      "error": null
+    },
+    {
+      "id": "LCBPRZr3mdEQAoEkpi88",
+      "email": "fontedevidalaranjeiras@gmail.com",
+      "currentFirebaseUid": "3lhdKt9Jxtb5hbu3fDRusi0Hs6X2",
+      "willSetFirebaseUid": null,
+      "action": "skip-already-has-uid",
+      "error": null
+    },
+    {
+      "id": "TX81hye4NPnL55BaX8FZ",
+      "email": "dudadapan@gmail.com",
+      "currentFirebaseUid": "6eqj7xYxR0cdmRzwyGlHdgZVtSk2",
+      "willSetFirebaseUid": null,
+      "action": "skip-already-has-uid",
+      "error": null
+    },
+    {
+      "id": "gQWkrrpCKtCizVOT1KRI",
+      "email": "machado.warllei@gmail.com",
+      "currentFirebaseUid": "3atWn0a9q1WYuKaKReU0xuBdMJ43",
+      "willSetFirebaseUid": null,
+      "action": "skip-already-has-uid",
+      "error": null
+    }
+  ]
+}

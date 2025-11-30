@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras específicas para cada coleção
+    match /announcements/{announcementId} {
+      allow read: if true; // Qualquer um pode ler anúncios
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /cultos/{cultoId} {
+      allow read: if true; // Qualquer um pode ler cultos
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /scripts/{scriptId} {
+      allow read: if true; // Qualquer um pode ler roteiros
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /messages/{messageId} {
+      allow read: if true; // Qualquer um pode ler mensagens
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /leaderRequests/{requestId} {
+      allow read: if true; // Qualquer um pode ler solicitações
+      allow write: if true; // Qualquer um pode criar solicitações
+    }
+    
+    match /ministryDepartments/{departmentId} {
+      allow read: if true; // Qualquer um pode ler departamentos
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /settings/{settingId} {
+      allow read: if true; // Qualquer um pode ler configurações
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /authorizedUsers/{userId} {
+      allow read: if true; // Qualquer um pode ler usuários autorizados
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /users/{userId} {
+      allow read: if request.auth != null; // Apenas usuários logados podem ler
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever
+    }
+    
+    match /audit_logs/{logId} {
+      allow read: if request.auth != null; // Apenas usuários logados podem ler logs
+      allow write: if request.auth != null; // Apenas usuários logados podem escrever logs
+    }
+    
+    // Fallback para outros documentos
+    match /{document=**} {
+      allow read: if true; // Leitura livre para outros documentos
+      allow write: if request.auth != null; // Escrita apenas para usuários logados
+    }
+  }
+}

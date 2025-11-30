@@ -1,0 +1,110 @@
+{
+  "name": "Sophia - Agendamentos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sophia/appointments/create",
+        "responseMode": "onReceived"
+      },
+      "id": "Webhook_Appointments",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        280,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const b = $json;\nconst required = ['type','date','requester','contact'];\nfor (const k of required) {\n  if (!b[k] || String(b[k]).trim()==='') {\n    throw new Error(`missing_${k}`);\n  }\n}\nconst iso = new Date(b.date).toISOString();\nreturn [{ json: {\n  type: String(b.type).trim(),\n  date: iso,\n  requester: String(b.requester).trim(),\n  contact: String(b.contact).trim(),\n  notes: b.notes || ''\n}}];"
+      },
+      "id": "Normalize",
+      "name": "Normalize",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        520,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO appointments(type, date_iso, requester, contact, notes) VALUES(:type, :date, :requester, :contact, :notes) RETURNING id;",
+        "additionalFields": {
+          "queryParameters": {
+            "values": {
+              "type": "={{$json.type}}",
+              "date": "={{$json.date}}",
+              "requester": "={{$json.requester}}",
+              "contact": "={{$json.contact}}",
+              "notes": "={{$json.notes}}"
+            }
+          }
+        }
+      },
+      "id": "PostgresInsert",
+      "name": "Postgres Insert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "credentials": {
+        "postgres": "Postgres FonteNews"
+      },
+      "position": [
+        760,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "responseData": "={ { ok: true, appointmentId: $json[0].id } }",
+        "responseCode": 200
+      },
+      "id": "Respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        360
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize": {
+      "main": [
+        [
+          {
+            "node": "Postgres Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Insert": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

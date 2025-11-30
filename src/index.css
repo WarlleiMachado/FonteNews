@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --church-primary: 255 101 44;
+  /* Safe area CSS env fallbacks */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  
+  /* Light Theme (default) - aligned to king-system slate palette */
+  --jkd-bg-col: #f1f5f9; /* slate-100 */
+  --jkd-bg-col-sec: #ffffff; /* cards/containers */
+  --jkd-h-col: #0f172a; /* slate-900 */
+  --jkd-txt-col: #475569; /* slate-600 */
+  --jkd-b-col-def: #e2e8f0; /* slate-200 */
+}
+
+.dark {
+  /* Dark Theme - aligned to king-system slate palette */
+  --jkd-bg-col: #0f172a; /* slate-900 */
+  --jkd-bg-col-sec: #1f2937; /* slate-800 */
+  --jkd-h-col: #e2e8f0; /* slate-200 */
+  --jkd-txt-col: #cbd5e1; /* slate-300 */
+  --jkd-b-col-def: #334155; /* slate-700 */
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--jkd-bg-col);
+  color: var(--jkd-txt-col);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Safe area support for notch and system bars */
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+/* Utility classes to offset fixed elements above bottom system bar */
+.safe-bottom-4 {
+  bottom: calc(var(--safe-area-inset-bottom) + 1rem);
+}
+
+.safe-bottom-6 {
+  bottom: calc(var(--safe-area-inset-bottom) + 1.5rem);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--jkd-h-col);
+}
+
+/* Evitar que a cor global de headings afete o slider legado */
+.fsc-container h1, .fsc-container h2, .fsc-container h3, .fsc-container h4, .fsc-container h5, .fsc-container h6 {
+  color: inherit;
+}
+
+/* Custom scrollbar (Chromium/WebKit) */
+/* Visível e com cor principal do app */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--church-primary) / 0.08);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--church-primary));
+  border-radius: 9999px;
+  border: 2px solid rgb(0 0 0 / 0);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--church-primary) / 0.85);
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: thin; /* thin para melhorar visibilidade mantendo leveza */
+  scrollbar-color: rgb(var(--church-primary)) rgb(var(--church-primary) / 0.1);
+}
+
+/* Esconder scrollbar em dispositivos móveis */
+@media (max-width: 768px) {
+  /* WebKit scrollbar - esconder em mobile */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Firefox scrollbar - esconder em mobile */
+  html {
+    scrollbar-width: none;
+  }
+  
+  /* Garantir que o body e html permitam rolagem por touch */
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling no iOS */
+  }
+}
+
+/* React Calendar customizations */
+.react-calendar {
+  @apply w-full border-0 bg-transparent font-sans;
+}
+.react-calendar__navigation button {
+  color: var(--jkd-h-col);
+  @apply hover:bg-black/5 dark:hover:bg-white/5 rounded-lg;
+}
+.react-calendar__month-view__weekdays {
+  color: var(--jkd-txt-col);
+  @apply font-medium opacity-70;
+}
+.react-calendar__tile {
+  color: var(--jkd-h-col);
+  @apply hover:bg-black/5 dark:hover:bg-white/5 rounded-full p-2 relative;
+}
+.react-calendar__tile--active {
+  background-color: rgb(var(--church-primary)) !important;
+  @apply text-white rounded-full;
+}
+.react-calendar__tile--hasEvent::after {
+  content: '';
+  @apply absolute bottom-1.5 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-church-primary rounded-full;
+}
+.react-calendar__tile--now {
+    background-color: rgb(var(--church-primary) / 0.1);
+    @apply rounded-full;
+}
+
+/* Time input styles */
+input[type="time"] {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+input[type="time"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+  opacity: 1;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(var(--church-primary), 0.1);
+  border-radius: 4px;
+}
+
+/* Ensure the time picker button is visible */
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-clear-button {
+  display: none;
+}
+
+input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+input[type="time"]::-webkit-datetime-edit-text {
+  color: var(--jkd-txt-col);
+  padding: 0 2px;
+}
+
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field {
+  color: var(--jkd-txt-col);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+/* Badge pulse animation custom (0.2s cubic-bezier(.4,0,.6,1)) */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.animate-pulse-fast {
+  animation: pulse 0.2s cubic-bezier(.4,0,.6,1) infinite;
+}
+
+/* Play icon slow blink animation */
+@keyframes fade-in-out-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-fade-slow {
+  animation: fade-in-out-slow 2.4s ease-in-out infinite;
+}
+
+/* Utilities: multi-line clamp and word breaking */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Correção dos toggles - dimensões exatas para o container */
+.toggle-container {
+  width: 2.7rem; /* w-11 equivalent */
+  height: 1.5rem; /* h-6 equivalent */
+  position: relative;
+  border-radius: 9999px;
+}
+
+.toggle-container::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 1.25rem; /* h-5 equivalent para o círculo interno */
+  width: 1.25rem; /* w-5 equivalent para o círculo interno */
+  background-color: white;
+  border-radius: 9999px;
+  transition: all 0.2s ease-out;
+}
+
+/* Quando o checkbox está marcado, move o círculo para a direita */
+.peer:checked ~ .toggle-container::after {
+  transform: translateX(1.2rem);
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slider Teste - Fonte News</title>
+  <style>
+    :root { --primary: #ff652c; }
+    html, body { height: 100%; margin: 0; font-family: Inter, system-ui, sans-serif; }
+    .hero { display: flex; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, rgba(255,101,44,0.08), rgba(0,0,0,0.06)); }
+    .card { max-width: 960px; width: 100%; border: 1px solid #ddd; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.08); overflow: hidden; }
+    .header { padding: 16px; background: rgba(255,101,44,0.08); border-bottom: 1px solid #eee; }
+    .header h1 { margin: 0; font-size: 18px; color: #222; }
+    .content { padding: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .tile { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fafafa; }
+    .tile img { display: block; width: 100%; height: 140px; object-fit: cover; }
+    .tile .caption { padding: 10px; font-size: 13px; color: #444; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; background: var(--primary); color: #fff; }
+    .footer { padding: 16px; background: #fafafa; border-top: 1px solid #eee; font-size: 12px; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="card">
+      <div class="header">
+        <h1>
+          Slider de Teste (iframe) — carregado com sucesso
+          <span class="badge">Dev</span>
+        </h1>
+      </div>
+      <div class="content">
+        <p style="margin-top:0;color:#555">Este conteúdo é servido pelo Vite dev server e deve aparecer dentro do iframe da Home do Site.</p>
+        <div class="grid">
+          <div class="tile">
+            <img src="https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?q=80&w=800&auto=format&fit=crop" alt="Paisagem" />
+            <div class="caption">Imagem de demonstração A</div>
+          </div>
+          <div class="tile">
+            <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=800&auto=format&fit=crop" alt="Montanhas" />
+            <div class="caption">Imagem de demonstração B</div>
+          </div>
+          <div class="tile">
+            <img src="https://images.unsplash.com/photo-1527979814690-d151e74ce685?q=80&w=800&auto=format&fit=crop" alt="Mar" />
+            <div class="caption">Imagem de demonstração C</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        Dica: para validar, defina `sliderUrl` como `/slider-test.html`.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

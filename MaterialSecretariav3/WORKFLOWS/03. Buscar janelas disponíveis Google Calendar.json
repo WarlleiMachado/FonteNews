@@ -1,0 +1,723 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "periodo_inicio"
+            },
+            {
+              "name": "periodo_fim"
+            },
+            {
+              "name": "id_agenda"
+            },
+            {
+              "name": "tamanho_janela_minutos",
+              "type": "number"
+            },
+            {
+              "name": "granularidade",
+              "type": "number"
+            },
+            {
+              "name": "amostras",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        32
+      ],
+      "id": "88efef4e-2eee-4faa-b0e9-67ae3e47c08c",
+      "name": "Gatilho"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"<agenda não configurada>\": {\n    \"segunda\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"terça\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quarta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quinta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sexta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sabado\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"11:00\"\n      }\n    ], \n    \"domingo\": []\n  },\n  \"<agenda não configurada>\": {\n    \"segunda\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"terça\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quarta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quinta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sexta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sabado\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"11:00\"\n      }\n    ], \n    \"domingo\": []\n  },\n  \"<agenda não configurada>\": {\n    \"segunda\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"terça\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quarta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quinta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sexta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sabado\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"11:00\"\n      }\n    ], \n    \"domingo\": []\n  },\n  \"<agenda não configurada>\": {\n    \"segunda\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"terça\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quarta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"quinta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sexta\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"12:00\"\n      }, \n      {\n        \"inicio\": \"14:00\", \n        \"fim\": \"18:00\"\n      }\n    ],\n    \"sabado\": [\n      {\n        \"inicio\": \"08:00\", \n        \"fim\": \"11:00\"\n      }\n    ], \n    \"domingo\": []\n  }\n}\n",
+        "includeOtherFields": true,
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1424,
+        32
+      ],
+      "id": "f78b9e1c-8bac-4ba4-ba2e-1e60e4ae0691",
+      "name": "Disponibilidade"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5c5b28b-90e4-4cc4-a962-2ea27332245a",
+              "name": "periodo_inicio_timestamp",
+              "value": "={{ (new Date($('Gatilho').item.json.periodo_inicio) || $now.startOf('day')).format('X') }}",
+              "type": "number"
+            },
+            {
+              "id": "5ce5160d-3506-4cb8-b282-2bd5fcf0733a",
+              "name": "periodo_fim_timestamp",
+              "value": "={{ (new Date($('Gatilho').item.json.periodo_fim ) || $now.plus(1,'day').startOf('day')).format('X') }}",
+              "type": "number"
+            },
+            {
+              "id": "bc1d94bb-9a0a-4d0c-a760-642a07d96cbc",
+              "name": "tamanho_janela_minutos",
+              "value": "={{ $('Tamanho janela válido?').item.json.tamanho_janela_minutos || 60 }}",
+              "type": "number"
+            },
+            {
+              "id": "8cfe23c6-6e54-474f-b792-91e1d5323cce",
+              "name": "granularidade",
+              "value": "={{ $('Tamanho janela válido?').item.json.granularidade || 30 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1648,
+        32
+      ],
+      "id": "f2b2db47-3553-4ecb-9c80-d763bdb6e3e2",
+      "name": "Configurações"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Divide um período de tempo em \"janelas\".\n */\n\nfunction formatar_data(data) {\n  const offset = data.getTimezoneOffset();\n  data.setTime(data.getTime() - 60 * offset * 1000);\n\n  return data.toISOString().slice(0, -5) + formatar_fuso(data);\n}\n\nfunction formatar_fuso(date) {\n  const offset = date.getTimezoneOffset();\n  const hora = Math.floor(Math.abs(offset) / 60);\n  const minutos = Math.abs(offset) % 60;\n  const sinal = offset <= 0 ? \"+\" : \"-\";\n\n  return `${sinal}${String(hora).padStart(2, \"0\")}:${String(minutos).padStart(\n    2,\n    \"0\"\n  )}`;\n}\n\nconst {\n  periodo_inicio_timestamp,\n  periodo_fim_timestamp,\n  granularidade,\n  tamanho_janela_minutos,\n} = $(\"Configurações\").first().json;\n\nconst total_minutos = (periodo_fim_timestamp - periodo_inicio_timestamp) / 60;\nconst quantidade_janelas = total_minutos / granularidade;\n\nconst janelas = [];\n\nfor (let janela_i = 0; janela_i < quantidade_janelas; janela_i++) {\n  const offset_janela = janela_i * granularidade * 60;\n  const inicio_janela_timestamp = periodo_inicio_timestamp + offset_janela;\n  const fim_janela_timestamp =\n    inicio_janela_timestamp + tamanho_janela_minutos * 60;\n\n  // Não criar janelas fora do período.\n  if (fim_janela_timestamp > periodo_fim_timestamp) {\n    break;\n  }\n\n  const inicio_janela = new Date(inicio_janela_timestamp * 1000);\n  const fim_janela = new Date(fim_janela_timestamp * 1000);\n\n  janelas.push({\n    inicio_janela: formatar_data(inicio_janela),\n    fim_janela: formatar_data(fim_janela),\n  });\n}\n\nreturn janelas;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2096,
+        32
+      ],
+      "id": "0818cdc2-7e7c-435c-acb5-3c98837c8a11",
+      "name": "Gerar janelas de tempo",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Filtra janelas pela disponibilidade.\n */\n\nconst DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sabado'\n];\n\nfunction tempo_para_minutos(tempo_str) {\n  const [horas, minutos] = tempo_str.split(':').map(Number);\n  return horas * 60 + minutos;\n}\n\nfunction obter_minutos_da_data(data) {\n  return data.getHours() * 60 + data.getMinutes();\n}\n\nfunction janela_dentro_disponibilidade(janela, disponibilidade) {\n  const inicio = new Date(janela.inicio_janela);\n  const fim = new Date(janela.fim_janela);\n\n  // Ignorar caso especial: inicio em fim em dias diferentes.\n  if (inicio.toDateString() !== fim.toDateString()) {\n    return false;\n  }\n\n  const dia_semana = DIAS[inicio.getDay()];\n  const disponibilidade_dia = disponibilidade[dia_semana];\n\n  if (!disponibilidade_dia || disponibilidade_dia.length === 0) {\n    return false;\n  }\n\n  const inicio_janela = obter_minutos_da_data(inicio);\n  const fim_janela = obter_minutos_da_data(fim);\n  \n  for (const periodo of disponibilidade_dia) {\n    const inicio_periodo = tempo_para_minutos(periodo.inicio);\n    const fim_periodo = tempo_para_minutos(periodo.fim);\n    \n    if (inicio_janela >= inicio_periodo && fim_janela <= fim_periodo) {\n      return true;\n    }\n  }\n  \n  return false;\n}\n\nconst janelas = $('Gerar janelas de tempo').all();\nconst { id_agenda } = $('Gatilho').first().json;\nconst disponibilidade = $('Disponibilidade').first().json[id_agenda];\n\nif (!disponibilidade) {\n  throw new Error('Disponibilidade não cadastrada para agenda. Verificar nó \"Disponibilidade\"')\n}\n\nreturn janelas.filter(janela => janela_dentro_disponibilidade(janela.json, disponibilidade));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        32
+      ],
+      "id": "e049bc02-faf2-4c9a-93f7-ddc857306b42",
+      "name": "Filtrar disponibilidade",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "type": "random"
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        2976,
+        32
+      ],
+      "id": "9f83c183-c2ce-4f17-8a31-db5598ab639b",
+      "name": "Aleatoriza a ordem",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Selecionar amostras de janelas. Retorna todas caso número de amostras não seja informado.\n */\n\nconst { amostras } = $(\"Gatilho\").first().json;\n\nconst janelas = $(\"Aleatoriza a ordem\")\n  .all()\n  .map(({ json }) => json)\n  // Se `amostras` não foi informado, retorna todas as janelas\n  .slice(0, amostras ?? undefined);\n\nreturn janelas.sort(\n  (a, b) =>\n    new Date(a.inicio_janela).getTime() -\n    new Date(b.inicio_janela).getTime()\n);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        32
+      ],
+      "id": "e2f9cc5b-f15d-46f4-b0d7-467442863524",
+      "name": "Selecionar amostras",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Verificar se as janelas de tempo disponíveis não conflitam com eventos já agendados.\n */\n\nfunction formatar_data(data) {\n  const offset = data.getTimezoneOffset();\n  data.setTime(data.getTime() - 60 * offset * 1000);\n\n  return data.toISOString().slice(0, -5) + formatar_fuso(data);\n}\n\nfunction formatar_fuso(data) {\n  const offset = data.getTimezoneOffset();\n  const hora = Math.floor(Math.abs(offset) / 60);\n  const minutos = Math.abs(offset) % 60;\n  const sinal = offset <= 0 ? \"+\" : \"-\";\n\n  return `${sinal}${String(hora).padStart(2, \"0\")}:${String(minutos).padStart(\n    2,\n    \"0\"\n  )}`;\n}\n\nconst janelas = $(\"Selecionar amostras\")\n  .all()\n  .map(({ json }) => ({\n    inicio_janela: new Date(json.inicio_janela),\n    fim_janela: new Date(json.fim_janela),\n  }));\n\nconst eventos = $(\"Consulta eventos no período\").all();\n\n// Se não há eventos agendados, todas as janelas estão disponíveis\nif (Object.keys(eventos[0].json).length === 0) {\n  return janelas.map(({ inicio_janela, fim_janela }) => ({\n    inicio_janela: formatar_data(inicio_janela),\n    fim_janela: formatar_data(fim_janela),\n  }));\n}\n\nconst periodo_eventos = eventos.map(({ json }) => ({\n  inicio_evento: new Date(json.start.dateTime),\n  fim_evento: new Date(json.end.dateTime),\n}));\n\nreturn janelas\n  .filter(({ inicio_janela, fim_janela }) => {\n    for (const { inicio_evento, fim_evento } of periodo_eventos) {\n      if (inicio_janela < fim_evento && fim_janela > inicio_evento) {\n        // Overlap da janela com o evento\n        return false;\n      }\n    }\n    return true;\n  })\n  .map(({ inicio_janela, fim_janela }) => ({\n    inicio_janela: formatar_data(inicio_janela),\n    fim_janela: formatar_data(fim_janela),\n  }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3424,
+        32
+      ],
+      "id": "9c60c813-2bfb-4503-92ba-dfd62d34e3a3",
+      "name": "Verificar eventos na agenda",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9e63d847-edcd-4d79-9526-b9d42f1358c7",
+              "leftValue": "={{ [10, 15, 20, 30, 45, 60, 90, 120] }}",
+              "rightValue": "={{ $json.tamanho_janela_minutos || 60 }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "e06a278f-6b16-4f1e-8e04-78002eb7f02d",
+              "leftValue": "={{ [10, 15, 20, 30, 45, 60, 90, 120] }}",
+              "rightValue": "={{ $json.granularidade || 30 }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        32
+      ],
+      "id": "95ce5b1f-5c9e-4fd1-bda9-de0d901fd5a0",
+      "name": "Tamanho janela válido?"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "={{ $('Gatilho').item.json.id_agenda }}",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $('Configurações').item.json.periodo_inicio_timestamp.toDateTime('s') }}",
+        "timeMax": "={{ $('Configurações').item.json.periodo_fim_timestamp.toDateTime('s') }}",
+        "options": {
+          "recurringEventHandling": "expand",
+          "showHiddenInvitations": true
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1872,
+        32
+      ],
+      "id": "aeb4d5c7-fb06-44cc-a870-5ee04166ffb8",
+      "name": "Consulta eventos no período",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {}
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ed84157f-b3d7-454c-88e9-099a28153c0a",
+              "leftValue": "={{ $('Gatilho').item.json.periodo_inicio.toDateTime() }}",
+              "rightValue": "= {{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        32
+      ],
+      "id": "1448c7e0-acb0-4d8d-ba9b-1f02dc773e0f",
+      "name": "Período válido?"
+    },
+    {
+      "parameters": {
+        "content": "### Configurar disponibilidade!",
+        "height": 256,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1344,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "29438a81-f8a0-4214-bbe2-ac321a5d1355",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "568f0822-bbc7-4e96-a32c-63953201e5b5",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2304,
+        32
+      ],
+      "id": "0b9dfa0c-8384-415d-9c9b-f57b1d7e7137",
+      "name": "Alguma janela?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "568f0822-bbc7-4e96-a32c-63953201e5b5",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2736,
+        32
+      ],
+      "id": "8fe6cdcc-db50-411e-8735-6ee39866dca3",
+      "name": "Alguma janela?1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2976,
+        224
+      ],
+      "id": "209b4174-e564-4dae-a6ae-3237abcf7fb7",
+      "name": "Retorna vazio"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Tamanho da janela ou granularidade inválidos. Utilize um desses valores: [10, 15, 20, 30, 45, 60, 90, 120]"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        224
+      ],
+      "id": "11a02a5a-afa7-45d9-a514-a4653cb0cb82",
+      "name": "Janela inválida"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Período informado já passou."
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        224
+      ],
+      "id": "6ad2a237-95d9-4f0e-88bb-4bd5ad69b3d2",
+      "name": "Período inválido"
+    },
+    {
+      "parameters": {
+        "content": "## Configurações e validações",
+        "height": 480,
+        "width": 1072,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "13880c93-b8cb-423a-9e06-8d7107f08aa0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Buscar eventos e construir janelas",
+        "height": 480,
+        "width": 1840,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1824,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "9c650924-834f-4884-b267-88f8ddf6a636",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Checklist\n- [ ] Abrir node do Google Calendar e criar nova credencial\n- [ ] Configurar node \"Disponibilidade\"\n",
+        "height": 144,
+        "width": 448,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        208
+      ],
+      "id": "90e2413f-fc92-4005-81db-ed62f51ebd75",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## 03. Buscar janelas disponíveis Google Calendar",
+        "height": 80,
+        "width": 560,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -688
+      ],
+      "id": "f3f91982-6c17-45d5-b756-8e8334c1af04",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Quer entender como funciona?\n\n\n### Assista o vídeo, deixe um like, e se inscreva no canal para ter acesso a mais workflows como esse!\n\n[![Vídeo YouTube Secretária v3](https://i1.ytimg.com/vi_webp/U3Qx-ayR7To/maxresdefault.webp)](https://www.youtube.com/watch?v=U3Qx-ayR7To)",
+        "height": 440,
+        "width": 500,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -592
+      ],
+      "id": "53c6f5a8-5ae9-48db-9268-a1ad058b7fa0",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## [Clique aqui e entre agora para tirar suas dúvidas](https://lucasmoreira.fazer.ai)\n[![Banner comunidade](https://framerusercontent.com/images/KIXMxk9eKCoCsNeVm1oaz5HnaQ.png)](https://lucasmoreira.fazer.ai)",
+        "height": 440,
+        "width": 1380,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -592
+      ],
+      "id": "3156df0b-ae90-4d6c-875b-375c7c35e064",
+      "name": "Sticky Note36"
+    },
+    {
+      "parameters": {
+        "content": "## Usei Hostinger pra este workflow.\n## Replique aqui.\n\n\n\n\n\n\n\n\n\n## [Use o cupom `FAZERAI` pra ter 10% de desconto na sua primeira compra!](https://www.hostg.xyz/SHIMV)\n\n\n",
+        "height": 316,
+        "width": 552,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -144
+      ],
+      "id": "292418f0-3d91-4209-bcf0-8b47e07c9d3f",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "content": "[![Hostinger](https://framerusercontent.com/images/ptGVDA4KqG8GLNlWRDzFxaM.png?width=600&height=119)](https://www.hostg.xyz/SHIMV)\n",
+        "height": 96,
+        "width": 324,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "9aab58a0-49fa-418f-97b1-f4f14ebe2485",
+      "name": "Sticky Note29"
+    },
+    {
+      "parameters": {
+        "content": "[![fazer.ai](https://framerusercontent.com/images/HqY9djLTzyutSKnuLLqBr92KbM.png?scale-down-to=256)](https://fazer.ai?utm_source=n8n&utm_campaign=sec-v3)\n\n## Esse é um template faça você mesmo do canal\n## Lucas Moreira\n\n### Inscreva-se no nosso canal no YouTube\n[![YouTube Lucas Moreira](https://img.shields.io/youtube/channel/subscribers/UCtmp6SxzLscu0GRTbgM8FTw?style=flat-square&logo=youtube&label=Inscreva-se&color=f00)](https://youtube.com/@eulucassmoreira?si=0lH7hwX9pukjhmPQ)\n[![Instagram](https://img.shields.io/badge/instagram-black?logo=instagram&style=for-the-badge)](https://instagram.com/eulucassmoreira)\n[![GitHub fazer.ai](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white&label)](https://github.com/fazer-ai)\n",
+        "height": 440,
+        "width": 550,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -592
+      ],
+      "id": "eb1f9745-d903-4b34-96d5-e8f37cd7097e",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "@[youtube](FzVcigfqHjU)",
+        "height": 224,
+        "width": 368,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        -592
+      ],
+      "id": "efc216cc-57e3-4f7d-8edc-06a1ba85c12a",
+      "name": "Sticky Note17"
+    }
+  ],
+  "connections": {
+    "Gatilho": {
+      "main": [
+        [
+          {
+            "node": "Tamanho janela válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disponibilidade": {
+      "main": [
+        [
+          {
+            "node": "Configurações",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configurações": {
+      "main": [
+        [
+          {
+            "node": "Consulta eventos no período",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar janelas de tempo": {
+      "main": [
+        [
+          {
+            "node": "Alguma janela?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar disponibilidade": {
+      "main": [
+        [
+          {
+            "node": "Alguma janela?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aleatoriza a ordem": {
+      "main": [
+        [
+          {
+            "node": "Selecionar amostras",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selecionar amostras": {
+      "main": [
+        [
+          {
+            "node": "Verificar eventos na agenda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tamanho janela válido?": {
+      "main": [
+        [
+          {
+            "node": "Período válido?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Janela inválida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta eventos no período": {
+      "main": [
+        [
+          {
+            "node": "Gerar janelas de tempo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Período válido?": {
+      "main": [
+        [
+          {
+            "node": "Disponibilidade",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Período inválido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alguma janela?": {
+      "main": [
+        [
+          {
+            "node": "Filtrar disponibilidade",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna vazio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alguma janela?1": {
+      "main": [
+        [
+          {
+            "node": "Aleatoriza a ordem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna vazio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "936a763e3bf4f68eafc951654ad1b8930511c3731cb9e74c28a4773b3e4d1984"
+  }
+}

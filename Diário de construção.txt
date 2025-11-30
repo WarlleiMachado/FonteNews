@@ -1,0 +1,176 @@
+EM CONSTRUÇÃO — Documentação Técnica Profunda do Aplicativo FonteNews
+
+Resumo executivo
+- Aplicativo web SPA desenvolvido com React + TypeScript (bundler Vite).
+- Infraestrutura Google Firebase: Auth, Firestore, Storage, Analytics e Hosting.
+- Arquitetura modular com Contexts (Auth, App, Toast, Theme), roteamento com React Router, UI com TailwindCSS, Framer Motion e ícones Lucide.
+- Domínio inclui: Anúncios/Programações, Cultos, Roteiros (Scripts), Mural de Oração, Mensageria, Presença e páginas de site espelhadas.
+- Segurança regida por regras Firestore específicas por coleção, com leitura pública onde apropriado e escrita restrita por autenticação, papéis e ownership.
+- Deployment contínuo em Firebase Hosting (SPA com `rewrites`), cache agressivo para assets estáticos.
+
+1) Arquitetura e Stack
+- Frontend: React 18, TypeScript, Vite.
+- UI/UX: TailwindCSS, Framer Motion (transições, animações), Lucide Icons.
+- Data e Recorrência: `date-fns` + `ptBR` locale, `rrule` para recorrências com suporte a `DTSTART` e cálculo preciso de eventos em andamento.
+- Estado Global: Contexts (`AuthContext`, `AppContext`, `ToastContext`, `ThemeContext`) + hooks auxiliares (`useAuth`, `useApp`).
+- Roteamento: `react-router-dom` com rotas públicas e protegidas por papel (admin/editor/leader) e status.
+- Firebase SDKs: `app`, `auth`, `firestore`, `storage`, `analytics` inicializados em `src/lib/firebase.ts`.
+- Persistência de sessão: `browserSessionPersistence` (por aba) para evitar interferência entre abas; camadas auxiliares de sessão por aba em `src/utils/sessionManager.ts`.
+- Presença online: `src/utils/presenceManager.ts` com heartbeats e gestão de visibilidade/atividade.
+- Observabilidade: `ErrorBoundary` e `ToastProvider` para resiliência e feedback.
+
+2) Configuração Firebase
+- Projeto: `fontenews-877a3` (referência em `.firebaserc`).
+- Hosting: `firebase.json` define `public: dist`, `rewrites` (SPA → `index.html`) e cabeçalhos `Cache-Control: max-age=31536000` para `*.js`/`*.css`.
+- Variáveis de ambiente (via Vite): `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_MEASUREMENT_ID`. Há fallback para o projeto padrão quando ausentes.
+- Serviços habilitados: Auth, Firestore, Storage, Analytics.
+
+3) Regras de Segurança Firestore (visão geral)
+- Princípio: leitura pública ampla quando o conteúdo é público (anúncios, cultos, roteiros, mural), escrita restrita a usuários autenticados com verificações de ownership e/ou papel administrativo.
+- `announcements`: leitura pública; criação/atualização/remoção restritas a administradores (claims/admin, e-mails administrativos whitelist ou `role == 'admin'` em `/users/{uid}`).
+- `cultos`, `roteiros`, `scripts`: leitura pública; criação exige `authorFirebaseUid == request.auth.uid`; update por autor ou admin; delete somente admin (inclui whitelist de e-mails administrativos).
+- `messages`: leitura pública; criação por autenticados; update/delete por remetente, destinatários, mapeamento de `authorizedUserId` em `/users/{uid}`, ou administradores.
+- `chats/{chatId}`: leitura/escrita restritas aos participantes (`authorizedUserId` presente em `participants`). Subcoleção `messages`: criação pelo próprio participante, delete por autor ou admin.
+- `leaderRequests`: leitura e escrita abertas (permite onboarding de novos usuários/líderes).
+- `ministryDepartments`, `settings`: leitura pública; escrita para autenticados.
+- `authorizedUsers`: leitura pública; create por autenticados; update/delete pelo próprio (`firebaseUid == auth.uid`) ou admin.
+- `onlineUsers`: leitura pública; escrita apenas autenticados.
+- `users`: leitura/escrita apenas para autenticados.
+- `audit_logs`: leitura/escrita apenas para autenticados.
+- Alias e coleções auxiliares: `eventos`, `avisos`, `ministerios` seguem padrões de leitura pública e escrita autenticada, com `avisos` restrito a admins.
+- Mural de Oração:
+  - `prayers`: leitura pública; criação aberta (anônimos permitidos) com validação de campos; update por dono ou admin; engajamento autenticado via `prayedBy`, e anônimo via `prayedByAnon`; delete por dono ou admin.
+  - `prayer_comments`: leitura pública; criação exige autenticação; delete por autor do comentário, dono do pedido ou admin.
+  - `prayer_settings`: leitura pública; escrita restrita a admin.
+  - `outbox_emails`: leitura apenas admin; criação aberta (fila/registro de notificação); update/delete somente admin.
+- Presença/Visitantes:
+  - `anonOnlineUsers`: leitura/escrita abertas (contagem de presença anônima).
+  - `visitorDaily` e `visitorDaily/details`: leitura/escrita abertas para contagem idempotente por dia.
+  - `readerOnlineUsers`: leitura pública; escrita apenas autenticados.
+- Fallbacks: leitura pública e escrita autenticada para coleções futuras.
+
+4) Modelos de Domínio (src/types/index.ts)
+- `AnnouncementType`: domínio dinâmico via taxonomias (e.g., `aviso`, `evento`, `retiro`, `jantar`, `curso`, etc.).
+- `UserRole`: `admin` | `editor` | `leader`.
+- `ScriptStatus`: `rascunho` | `pronto` | `revisado`.
+- `TickerSettings`: habilitação, direção (`left`/`right`), escopo (`week`/`month`/`year`), velocidade (1–100).
+- `VideoNewsSettings`: habilitado, fonte (`youtube`/`url`), `url`.
+- `AwarenessCalendarSettings`: texto, fonte de imagem (`url`/`upload`), URLs, prioridade.
+- `Announcement`: título, conteúdo, `type` (taxonomia), `rruleString`, `endTime`, autor/IDs, ministério, mídia, prioridade (taxonomia), `status` (`pending`/`approved`/`rejected`), marcações auxiliares (`restoreRequested`), `createdAt`.
+- `Culto`: título, `rruleString`, `endTime`, mídia opcional.
+- `ChurchSettings`: identidade visual (logos, cor primária), direitos autorais, parallax, destaques de notícias (efeito/duração), overlay de countdown (ciclos), áudio de alertas (chat, aprovações, solicitações), áudio de início de programação, `awarenessCalendar`, slider externo (URL, ciclo de atualização e altura), contato, ticker e video news.
+- `AuthorizedUser`: perfil do usuário autorizado com `status` (`active`|`blocked`|`inactive`), papel (`role`), `firebaseUid` e proteção opcional.
+- `User`: derivado de `AuthorizedUser` sem campos sensíveis.
+- `LeaderRequest`: fluxo de solicitações (onboarding), `status` e metadados.
+- `Message`: assunto, corpo, remetente/destinatários, leitura, auxiliares (`senderFirebaseUid`, `recipientFirebaseUids`, exclusão suave por usuário).
+- `MinistryDepartment`: nome e líderes associados.
+- `Script` (+ `ScriptHistoryEntry`, `ScriptAttachment`): conteúdo, recorrência, status, histórico, anexos, metadados.
+- Mural de Oração (`PrayerRequest`, `PrayerStatus`, `PrayerComment`, `PrayerSettings`): fluxo de aprovação, privacidade, engajamento autenticado/anônimo, identidade visual do mural.
+
+5) Autenticação, Sessão e Papéis
+- `AuthContext`: integra Firebase Auth (login e-mail/senha, Google), gestão de sessão, mapeamento de usuários Firebase para `AuthorizedUser` e papéis de domínio.
+- Status de usuário: `active` (pleno acesso conforme papel), `blocked` (acesso negado), `inactive` (limitado/pendente aprovações). O contexto reflete mudanças de status e interage com presença.
+- `ProtectedRoute`: wrapper condicional por papel e status (páginas exigem papéis específicos, ex.: admin-only).
+- Persistência por aba: configurada via `browserSessionPersistence` e reforçada por `sessionManager` que atribui `tabId` único e isola sessões.
+- Presença por usuário: `PresenceManager` registra/atualiza/remover documentos de presença no Firestore; heartbeats em ~30s e ~120s (inatividade), listeners de `visibilitychange`, `blur`, `focus`, `offline/online` e `beforeunload`.
+
+6) Páginas e Rotas (src/App.tsx)
+- Públicas: `/` (Home), `/login`, `/agenda`, `/cultos`, `/privacy`, `/terms`, `/cookies`, `/request-access`, `/roteiros`.
+- Site espelhado: `/site` (Home próprio), `/site/biblia`, `/site/pedido-de-oracao`, `/site/pedido-de-oracao/meus`, `/site/pedido-de-oracao/admin`.
+- Protegidas (exigem autenticação e, em alguns casos, papéis específicos): `/dashboard`, `/dashboard/new`, `/dashboard/edit/:id`, `/profile`, áreas de Intercessão Admin, Roteiros (novos e edição), Galeria, Gerenciamento.
+- Layout: `Layout` com `Header`, `Footer`, `Ticker`, `ConfirmationModal`, `InputPromptModal`, `VideoPlayerModal`, e `ScrollToTopButton` sempre disponível.
+
+7) Home e Lógica de Programações
+- Filtro por `status` (aprovados) e ordenação por data/criação.
+- Recorrência com `rrule`: interpreta `DTSTART` (hora/minuto) quando definido; calcula `startDate` e `endDate` coerentes com `endTime` de domínio.
+- Detecção de "Em andamento": itens cujo `startDate <= now <= endDate` (apenas se `endTime` existe).
+- Próximos itens: ordenação por `date` futura; visão resumida limitada (ex.: top 10).
+- Sticky offsets: cálculo dinâmico baseado na altura real do `header` e listeners de resize.
+- Atualizações periódicas: `nowTick` atualizado em intervalos curtos para refletir transições quase em tempo real.
+
+8) Botão Voltar ao Topo — Rolagem Suave Personalizada
+- Componente: `src/components/Common/ScrollToTopButton.tsx`.
+- Animação: 2000ms total com duas fases — 85% velocidade constante (linear) + 15% `easeOutCubic` para desaceleração suave.
+- Precisão de parada: clamp explícito e fixação final em `scrollTop = 0`.
+- Desempenho: `requestAnimationFrame` com `Math.round` e `Math.max` para estabilidade; handlers throttled (`useThrottle`) para scroll e clique.
+- UI: framer-motion para opacidade/escala, progresso circular (`strokeDashoffset` via proporção do scroll), acessibilidade via `aria-label`.
+
+9) Mural de Oração — Funcionalidades
+- Criação aberta (sem login), com status inicial configurável (`pending`/`approved`/`rejected`/`archived`/`active`).
+- Engajamento autenticado: atualização de `prayedBy` (add/remove se `allowUnpray` habilitado em `prayer_settings/default`).
+- Engajamento anônimo: `prayCount` e `prayedByAnon` por identificador persistido no navegador.
+- Comentários: exigem login; remoção por autor, dono do pedido ou administradores.
+- Configurações visuais e políticas no documento `prayer_settings`: paginação, ocultação de arquivados, assets de coração (filled/outline), e fundo do mural (source, repeat, size, position, opacity) com suporte a plugin.
+- Notificações: fila/registro em `outbox_emails` (criação aberta) para automações back-end.
+
+10) Mensageria e Chat
+- Mensagens (`messages`): domínio com controle de leitura por usuário, exclusão suave por usuário (campo `deletedForUserIds`), e validações por `senderFirebaseUid`/`recipientFirebaseUids`.
+- Chats (`chats`): salas com `participants` (IDs de `authorizedUserId`); subcoleção `messages` controlada por ownership; leitura restrita a participantes; exclusão por autor/admin.
+
+11) Conteúdo e Mídia
+- Storage: upload de imagens e anexos; referências em `imageUrl`, `attachments.url`, `imageUploadUrl`, `newsHighlightImages`, etc.
+- Vídeos: `VideoNewsSettings` com fonte `youtube` ou `url`; player modal (`VideoPlayerModal`).
+- Slider externo (WordPress Revolution Slider): carregamento via `iframe`, com auto-refresh por minutos e altura configurável.
+
+12) Níveis e Status de Usuários
+- Papéis: `admin` (pleno, configurações e moderação), `editor` (criação/edição de conteúdo), `leader` (gestão de ministérios/programações).
+- Status: `active` (permitido), `blocked` (negado), `inactive` (limitado). Comportamento refletido nas rotas e permissões de escrita.
+- Usuários Autorizados (`authorizedUsers`): fonte de verdade para integração de papéis/identidades com Firebase Auth; mapeamento realizado no `AuthContext`.
+
+13) Build, Preview e Deploy
+- Build: `npm run build` gera `dist` com `index.html` e bundles `*.js`/`*.css`; warnings de bundle >500kB observados (oportunidade de otimização por code splitting e lazy loading).
+- Preview local: porta padrão Vite (`5173/5174` em ambiente de IDE) para validação funcional.
+- Deploy: `firebase deploy --only hosting` publica em `https://fontenews-877a3.web.app` com `rewrites` SPA e cache estático longo.
+
+14) Observabilidade, Resiliência e UX
+- `ErrorBoundary`: captura erros de renderização e evita crash global.
+- `ToastProvider`: feedback transacional e informativo ao usuário.
+- `presenceManager`: robusto contra mudanças de visibilidade, foco, status de rede e encerramento de aba; heartbeats adaptativos.
+- Acessibilidade: botões com rótulos (`aria-label`), foco e `ring` visuais; considerar auditorias adicionais.
+
+15) Itens Futuros e Pendências (Roadmap Técnico)
+- Otimização de bundle: code splitting, redução de dependências pesadas, lazy loading de rotas/páginas e componentes (e.g., páginas do Site, módulos Roteiros/Cultos, Player de Vídeo).
+- Auditoria e logs: implementação sistemática de `audit_logs` e correlação com ações sensíveis; dashboards de auditoria.
+- Analytics: eventos customizados (engajamento, scroll, prayer interactions, presence) e funis de conversão.
+- Notificações: automação de `outbox_emails` via Cloud Functions; templates transacionais para novos pedidos/aprovações/engajamentos.
+- PWA: service worker, offline-first para páginas públicas (Home, Site, Mural), cache estratégico (Stale-While-Revalidate).
+- Acessibilidade: revisão WCAG, navegação por teclado, landmarks ARIA, contraste e foco consistente.
+- Segurança: revisão de regras para cenários edge, inclusão de verificação de schema (`request.resource.data`) ampliada; testes automatizados de regras.
+- Presença e métricas: painéis de presença e visitantes diários; correlação com páginas e interações; mitigação de fraudes (rate limit, deduplicação).
+- Chat UI: interface completa para salas, threads, menções, uploads; notificações push.
+- Mural de Oração: moderação avançada, filtros por `motif`, clusters, destaque editorial; anonimização diferencial.
+- Storage e mídia: pipeline de otimização de imagens (thumbs, WebP/AVIF), validação de MIME.
+- Integrações: sincronização seletiva com CMS externo (WordPress) para slider e conteúdo; webhooks.
+- Testes: unitários e integração (contexts, hooks, roteamento, regras Firestore simuladas); cobertura.
+- Observabilidade frontend: tracing por rota e por ação, logs centralizados (Sentry/LogRocket opcional).
+
+16) Considerações de Segurança e Privacidade
+- Campos sensíveis nunca devem ser expostos além do necessário; chaves de API do Firebase em clientes são públicas por design, mas regras Firestore protegem escrita e leitura sensíveis.
+- Dados de presença anônima são agregados e não vinculados a identidade; engajamentos anônimos no Mural devem evitar reidentificação.
+- As regras incluem whitelists de e-mails administrativos; recomenda-se migração para custom claims gerenciados e validação estandardizada.
+
+17) Convenções e Padrões
+- Estilo de código: TypeScript estrito, nomes descritivos, sem variáveis de uma letra.
+- Estrutura de pastas: `src/contexts`, `src/components`, `src/pages`, `src/utils`, `src/lib`, `src/types`.
+- Responsividade: Tailwind classes utilitárias; componentes principais com grid flexível.
+- Performance: throttling de eventos de scroll, `requestAnimationFrame` para animações; cálculo memoizado com `useMemo` e efeitos controlados.
+
+18) Endpoints e Fluxos Críticos
+- Login: Firebase Auth (e-mail/senha, Google). Persistência por aba. Mapeamento para `AuthorizedUser` e verificação de `status`/`role`.
+- Conteúdo (Anúncios/Cultos/Roteiros): CRUD com regras estritas; recorrência com `rrule`; destaques visuais e countdowns configuráveis.
+- Mural de Oração: criação aberta; moderação por admin; engajamento autenticado/anônimo; comentários autenticados; notificações por outbox.
+- Mensageria/Chat: segurança por participação; ownership rigoroso em subcoleções.
+- Presença/Visitantes: heartbeats, contagens diárias, sessões por aba/tabId, degrade para anônimos.
+
+19) Deploy Atual
+- Site publicado em `https://fontenews-877a3.web.app` com a rolagem suave do botão “Voltar ao topo” ajustada (2000ms, 85% linear + 15% easeOutCubic, parada precisa em 0).
+
+20) Apêndice — Observações Técnicas
+- `src/lib/firebase.ts`: inicializa serviços e configura persistência de sessão; log de erros em persistência.
+- `src/pages/Home.tsx`: cálculo de offsets sticky e detecção de "Em andamento" considerando `DTSTART` e `endTime`.
+- `src/utils/sessionManager.ts`: isolamento de sessão por aba com `tabId` único.
+- `src/utils/presenceManager.ts`: gerenciamento robusto de presença com heartbeats variáveis.
+- `src/components/Layout/Layout.tsx`: orquestra UI (modais, ticker, vídeo, scroll-to-top) e site espelhado.
+- `firestore.rules`: regras extensas para coleções principais, mural, chat, presença e visitantes.
+
+Este documento serve como referência viva. À medida que novas funcionalidades forem adicionadas, atualize as seções relevantes (regras, páginas, domínios e integrações) para manter a rastreabilidade técnica completa do App.

@@ -1,0 +1,2246 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Jm6Vdi0gjxV5AJE2",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Jm6Vdi0gjxV5AJE2",
+          "cachedResultName": "<selecionar ou criar subworkflow 04. Criar evento Google Calendar>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "evento_inicio": "={{ $json.body.evento_inicio }}",
+            "duracao_minutos": 60,
+            "titulo": "={{ $json.body.titulo }}",
+            "descricao": "={{ $json.body.descricao }}\n\nTelefone: {{ $json.headers['x-retell-user-number'] || '' }}",
+            "id_agenda": "={{ $json.body.id_agenda }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "evento_inicio",
+              "displayName": "evento_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "duracao_minutos",
+              "displayName": "duracao_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number"
+            },
+            {
+              "id": "titulo",
+              "displayName": "titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "descricao",
+              "displayName": "descricao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "id_agenda",
+              "displayName": "id_agenda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        288,
+        -624
+      ],
+      "id": "b03e1657-771c-4c20-aa6f-d00432b22bf7",
+      "name": "Criar evento"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "={{ $json.body.id_agenda }}",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "timeMax": "=",
+        "options": {
+          "query": "={{ $json.headers['x-retell-user-number'] || '' }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -624
+      ],
+      "id": "7fa19fcf-1f26-4e29-83d6-91a738ef07ef",
+      "name": "Buscar eventos",
+      "credentials": {
+        "googleCalendarOAuth2Api": {}
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -928,
+        224
+      ],
+      "id": "e6c83afe-9dfe-44c5-8028-c2dd51843bc2",
+      "name": "Follow-up no WhatsApp após chamada"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1df32ac3-63f4-4e17-9c5b-1c4f6cfda635",
+              "name": "cobranca_valor",
+              "value": "500",
+              "type": "string"
+            },
+            {
+              "id": "40ff895f-f63f-4e4f-bba3-c7d803c277f1",
+              "name": "url_chatwoot",
+              "value": "<inserir url do seu chatwoot>",
+              "type": "string"
+            },
+            {
+              "id": "1b513343-9b6a-4f6e-a012-ed819bf34a31",
+              "name": "id_conta",
+              "value": "=1",
+              "type": "string"
+            },
+            {
+              "id": "d540447e-4fa3-46c0-bc53-1f63433b4a70",
+              "name": "id_inbox",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "a1ae5215-cb10-4482-a5b0-b59cb0407171",
+              "name": "url_asaas",
+              "value": "https://api-sandbox.asaas.com",
+              "type": "string"
+            },
+            {
+              "id": "8bf522a6-75fb-434a-854c-b736539309e1",
+              "name": "telefone",
+              "value": "={{ $json.headers['x-retell-user-number'] || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "5d1d628d-919d-4d4f-8636-44a9e5998062",
+              "name": "nome",
+              "value": "={{ $json.body.nome }}",
+              "type": "string"
+            },
+            {
+              "id": "3ecd7058-99d4-4bc9-9701-fe641146ae7f",
+              "name": "cpf",
+              "value": "={{ $json.body.cpf }}",
+              "type": "string"
+            },
+            {
+              "id": "bbae5d9c-d534-4454-a798-bd1ba5ae41e4",
+              "name": "cobranca_vencimento",
+              "value": "={{ $json.body.cobranca_vencimento }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -784,
+        -368
+      ],
+      "id": "5551a88e-90e1-4f1c-a473-4225321e5ce1",
+      "name": "Info"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "B3uXPbfJAnhFWXXx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/B3uXPbfJAnhFWXXx",
+          "cachedResultName": "<selecionar ou criar subworkflow 10. Buscar ou criar contato + conversa>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Info').item.json.telefone }}",
+            "id_conta": "={{ $('Info').item.json.id_conta }}",
+            "id_inbox": "={{ $('Info').item.json.id_inbox }}",
+            "url_chatwoot": "={{ $('Info').item.json.url_chatwoot }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_conta",
+              "displayName": "id_conta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_inbox",
+              "displayName": "id_inbox",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_chatwoot",
+              "displayName": "url_chatwoot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        -368
+      ],
+      "id": "43191cce-45e3-4cd7-b3ed-268578200c7c",
+      "name": "Buscar ou criar contato"
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "856317ba-f133-4650-877a-36c698a819b6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2b17e799-2b2d-409e-b4b4-edb38b3331b9",
+              "leftValue": "={{ $('Criar ou buscar cobrança2').item.json.resultado }}",
+              "rightValue": "Cobrança criada.",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -144,
+        -368
+      ],
+      "id": "9cdb17e3-0421-4395-ba3c-23081a4f0077",
+      "name": "Nova cobrança?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca7d9f97-b9d4-4d95-b5ed-b3d951abe5da",
+              "name": "resultado",
+              "value": "={{ $('Criar ou buscar cobrança2').item.json.resultado }} Link enviado pelo WhatsApp.",
+              "type": "string"
+            },
+            {
+              "id": "bc901d49-5b96-4cad-af8c-20c12cef0642",
+              "name": "valor",
+              "value": "={{ $('Criar ou buscar cobrança2').item.json.valor }}",
+              "type": "string"
+            },
+            {
+              "id": "81fee5c4-d16e-4876-ad0d-896281ca5561",
+              "name": "vencimento",
+              "value": "={{ $('Criar ou buscar cobrança2').item.json.vencimento }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        304,
+        -448
+      ],
+      "id": "9a2f2049-7279-4f9c-b2bc-249fc247e27c",
+      "name": "Resultado"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -992,
+        -368
+      ],
+      "id": "04001127-71f8-4597-b6b9-7715c50f9025",
+      "name": "Criar ou buscar cobrança"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -272
+      ],
+      "id": "c07a1d18-7efb-4e31-a8e6-99bdde07dd4f",
+      "name": "Ignorar busca de cobrança existente"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc6ea9ec-fc03-4d81-b5c9-4521b8c843df",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "call_ended",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a8f5a3a9-e3c1-44c5-be41-0d066320ec11",
+              "leftValue": "={{ $json.body.call.transcript }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "971ed32b-8eba-4f1a-9a55-2eddef0003b2",
+              "leftValue": "={{ $json.body.call.call_type }}",
+              "rightValue": "phone_call",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -720,
+        224
+      ],
+      "id": "9f04c09c-498d-48ce-bad1-8d3bf1bb2708",
+      "name": "Chamada encerrada?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        320
+      ],
+      "id": "6e9c268b-c1d9-41d3-bd62-9a044b626cbe",
+      "name": "Ignorar outros eventos de chamada"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -144,
+        320
+      ],
+      "id": "1f9d53e4-fb17-41a8-8e96-46aeca2f7006",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Buscar ou criar contato2').item.json.contato.phone_number }}",
+        "tableName": "n8n_historico_mensagens",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        320
+      ],
+      "id": "744c67bd-570a-4182-8ce0-72f19f811231",
+      "name": "Memory",
+      "credentials": {
+        "postgres": {}
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "fdedf671-b56a-4fe3-b994-0d2de8c235b2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Info').item.json.url_chatwoot }}/api/v1/accounts/{{ $('Info').item.json.id_conta }}/conversations/{{ $('Buscar ou criar contato').item.json.conversa.id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "chatwootApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "=Olá {{ $('Info').item.json.nome }}!\n\nEstamos aguardando o pagamento no valor de R${{ $('Info').item.json.cobranca_valor }} relativo a sua consulta.\n\nClique aqui para ver mais informações sobre o pagamento: {{ $('Criar ou buscar cobrança2').item.json.link }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        96,
+        -448
+      ],
+      "id": "fae383c9-d014-4f6d-9bda-42e5422ba44b",
+      "name": "Enviar notificação cobrança",
+      "executeOnce": false,
+      "credentials": {
+        "chatwootApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Info5').item.json.url_chatwoot }}/api/v1/accounts/{{ $('Info5').item.json.id_conta }}/conversations/{{ $('Buscar ou criar contato2').item.json.conversa.id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "chatwootApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{  $('Agente de Follow-up de Chamada').item.json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        160
+      ],
+      "id": "a4770336-f836-474a-b973-6ea700ebd51b",
+      "name": "Enviar mensagem follow-up chamada",
+      "executeOnce": false,
+      "credentials": {
+        "chatwootApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Info5').item.json.transcricao }}",
+        "options": {
+          "systemMessage": "=# PAPEL\n\n<papel>\n  Você é a Maria, secretária virtual da Clínica Moreira, responsável por processar transcrições de ligações telefônicas e enviar resumos via WhatsApp. Sua função é extrair informações relevantes da conversa e comunicar de forma clara e concisa os próximos passos ao paciente.\n</papel>\n\n# PERSONALIDADE E TOM DE VOZ\n\n<personalidade>\n  * **Objetiva e organizada**: Sintetize informações complexas em pontos claros\n  * **Profissional e confiável**: Transmita segurança sobre o que foi conversado\n  * **Atenciosa aos detalhes**: Capture todos os compromissos e combinados\n  * **Proativa**: Antecipe próximas ações necessárias\n  * **Clara e confirmatória**: Elimine ambiguidades da conversa telefônica\n</personalidade>\n\n# CONTEXTO DA TAREFA\n\n<contexto>\n  Uma ligação telefônica acaba de ocorrer entre o paciente e a clínica. Você recebe a transcrição e deve:\n  \n  1. Identificar o assunto principal da ligação\n  2. Extrair compromissos, datas e ações acordadas\n  3. Criar mensagem de follow-up confirmando os pontos importantes\n  4. Incluir próximos passos, se houver\n  \n  **IMPORTANTE**: A mensagem serve como registro escrito do que foi conversado por telefone.\n</contexto>\n\n# SOP - PROCEDIMENTO OPERACIONAL PADRÃO\n\n## 1. ANÁLISE DA TRANSCRIÇÃO\n\n<analise-transcricao>\n  ### 1.1 Identificação de Elementos-Chave\n  \n  Procure e extraia:\n  * **MOTIVO**: Razão principal da ligação\n  * **DECISÕES**: O que foi decidido ou acordado\n  * **DATAS/HORÁRIOS**: Compromissos marcados\n  * **VALORES**: Custos mencionados\n  * **PENDÊNCIAS**: O que ficou para resolver\n  * **RESPONSÁVEIS**: Quem fará o quê\n  \n  ### 1.2 Classificação do Tipo de Ligação\n  \n  * **Agendamento**: Nova consulta marcada\n  * **Reagendamento**: Alteração de consulta existente\n  * **Cancelamento**: Consulta desmarcada\n  * **Esclarecimento**: Dúvidas respondidas\n  * **Emergência**: Situação urgente tratada\n  * **Administrativo**: Questões de pagamento/documentos\n  \n  ### 1.3 Validação de Informações\n  \n  * Verifique consistência de datas e horários\n  * Confirme nomes de profissionais mencionados\n  * Valide valores com tabela padrão\n  * Identifique possíveis mal-entendidos\n</analise-transcricao>\n\n## 2. ESTRUTURAÇÃO DA MENSAGEM\n\n<estruturacao-mensagem>\n  ### 2.1 Formato Padrão\n  \n  ```\n  APRESENTAÇÃO\n  ↓\n  REFERÊNCIA À LIGAÇÃO\n  ↓\n  RESUMO DO ASSUNTO PRINCIPAL\n  ↓\n  PONTOS ACORDADOS (se houver)\n  ↓\n  PRÓXIMAS AÇÕES (se houver)\n  ↓\n  CONFIRMAÇÃO/ENCERRAMENTO\n  ```\n  \n  ### 2.2 Componentes por Tipo\n  \n  **Apresentação (obrigatória em todas as mensagens):**\n  * Inicie sempre com \"Olá, aqui é a Maria, da Clínica Moreira\"\n  * Ou variações como \"Oi! Maria da Clínica Moreira por aqui\"\n  * Mantenha tom profissional mas acolhedor\n  \n  **Para Agendamentos:**\n  * Data, hora e profissional\n  * Valor e forma de pagamento\n  * Documentos necessários\n  * Endereço da clínica\n  \n  **Para Cancelamentos:**\n  * Confirmação do cancelamento\n  * Consulta cancelada (data/profissional)\n  * Menção sobre reagendamento futuro\n  \n  **Para Dúvidas:**\n  * Resumo da informação fornecida\n  * Links ou contatos adicionais\n  * Oferecimento para mais esclarecimentos\n  \n  ### 2.3 Linguagem de Confirmação\n  \n  Use termos que reforcem o acordado:\n  * \"Conforme conversamos...\"\n  * \"Como combinado...\"\n  * \"Confirmando o que acertamos...\"\n  * \"Resumindo nossa conversa...\"\n</estruturacao-mensagem>\n\n## 3. FORMATAÇÃO E CLAREZA\n\n<formatacao-clareza>\n  ### 3.1 Organização Visual\n  \n  * Use quebras de linha para separar tópicos\n  * Destaque datas e horários\n  * Enumere ações quando múltiplas\n  * Mantenha parágrafos curtos\n  \n  ### 3.2 Eliminação de Ambiguidades\n  \n  * Converta \"semana que vem\" em data específica\n  * Transforme \"de manhã\" em horário exato\n  * Especifique \"doutor\" com nome completo\n  * Clarifique \"aquele valor\" com montante exato\n  \n  ### 3.3 Informações Complementares\n  \n  Adicione quando não mencionado mas relevante:\n  * Endereço completo da clínica\n  * Telefone para contato\n  * Prazo para pagamento\n  * Documentos necessários\n</formatacao-clareza>\n\n# REGRAS E VALIDAÇÕES\n\n<validacoes>\n  ## Regras Críticas\n  \n  1. **Precisão Absoluta**\n    * NUNCA invente informações não presentes na transcrição\n    * NUNCA altere datas, horários ou valores\n    * NUNCA adicione compromissos não acordados\n    * SEMPRE use \"se entendi corretamente\" quando houver dúvida\n  \n  2. **Limites da Mensagem**\n    * Máximo 10-12 linhas (incluindo apresentação)\n    * Foque no essencial\n    * Evite repetir toda a conversa\n    * Priorize ações e compromissos\n  \n  3. **Apresentação Obrigatória**\n    * SEMPRE inicie com apresentação como Maria\n    * Use variações naturais: \"Olá, aqui é a Maria...\" ou \"Oi! Maria por aqui...\"\n    * Mencione \"Clínica Moreira\" na apresentação\n    * Mantenha tom acolhedor mas profissional\n  \n  4. **Tom Apropriado**\n    * Sempre profissional, nunca casual demais\n    * Evite comentários sobre a qualidade da ligação\n    * Não mencione problemas técnicos\n    * Mantenha foco no conteúdo, não no formato\n</validacoes>\n\n# EXEMPLOS DE MENSAGENS\n\n<exemplos>\n  ## Exemplo 1: Agendamento Realizado\n  \n  ```\n  Olá, aqui é a Maria da Clínica Moreira!\n  \n  Conforme nossa conversa telefônica agora há pouco:\n  \n  ✅ Consulta agendada para quinta-feira, 12/12 às 14:00\n  📍 Com Dr. Roberto Almeida - Cardiologista\n  💰 Valor: R$ 500,00 (PIX ou cartão)\n  \n  Por favor, chegue 15 minutos antes para cadastro.\n  Endereço: Av. das Palmeiras, 1500 - Jardim América\n  \n  Qualquer dúvida, estamos à disposição!\n  ```\n  \n  ## Exemplo 2: Reagendamento\n  \n  ```\n  Oi! Maria da Clínica Moreira por aqui.\n  \n  Confirmando o que acertamos por telefone:\n  \n  Sua consulta foi remarcada de 10/12 para 15/12 às 10:00.\n  Permanece com a Dra. Ana Silva.\n  \n  Já atualizamos em nosso sistema.\n  Obrigada pela compreensão!\n  ```\n  \n  ## Exemplo 3: Esclarecimento de Dúvidas\n  \n  ```\n  Olá, aqui é a Maria da Clínica Moreira.\n  \n  Resumindo as informações da nossa ligação:\n  \n  - Aceitamos seu convênio Unimed\n  - Necessário trazer carteirinha e documento\n  - Consulta particular caso precise: R$ 500,00\n  \n  Para agendar, pode me responder por aqui mesmo.\n  Fico à disposição!\n  ```\n  \n  ## Exemplo 4: Cancelamento\n  \n  ```\n  Oi! Maria da Clínica Moreira aqui.\n  \n  Conforme conversado por telefone:\n  \n  ✅ Cancelamos sua consulta de amanhã (11/12) às 15:00\n  \n  Quando quiser reagendar, é só entrar em contato.\n  Esperamos vê-lo em breve!\n  ```\n  \n  ## Exemplo 5: Múltiplos Assuntos\n  \n  ```\n  Olá, aqui é a Maria da Clínica Moreira!\n  \n  Resumindo nossa conversa telefônica:\n  \n  1. Consulta dia 13/12 às 9h confirmada\n  2. Exames anteriores: trazer se tiver\n  3. Pagamento: pode ser feito na recepção\n  4. Retorno: agendar após a consulta\n  \n  Alguma dúvida sobre o que conversamos?\n  ```\n</exemplos>\n\n# CASOS ESPECIAIS\n\n<casos-especiais>\n  ## Transcrição Confusa ou Incompleta\n  \n  * Use \"Pelo que entendi da nossa conversa...\"\n  * Liste apenas pontos claros\n  * Ofereça esclarecimento: \"Se precisar confirmar algo, me avise\"\n  \n  ## Ligação Interrompida\n  \n  * Mencione brevemente: \"Sobre nossa ligação que caiu...\"\n  * Foque no que foi acordado antes da interrupção\n  * Ofereça continuar por mensagem\n  \n  ## Múltiplos Participantes na Ligação\n  \n  * Identifique para quem é cada informação\n  * Separe compromissos por pessoa\n  * Use nomes quando necessário\n  \n  ## Informações Sensíveis Mencionadas\n  \n  * NÃO inclua diagnósticos ou condições médicas\n  * NÃO mencione informações pessoais desnecessárias\n  * Foque apenas em questões administrativas\n  \n  ## Promessas Não Autorizadas\n  \n  * Se detectar promessa fora do padrão\n  * Use: \"Vamos verificar a possibilidade de...\"\n  * Não confirme o que não tem certeza\n</casos-especiais>\n\n# OBSERVAÇÕES FINAIS\n\n<observacoes-finais>\n  ## LEMBRE-SE SEMPRE\n  \n  * ⚠️ SEMPRE inicie a mensagem se apresentando como Maria\n  * ⚠️ Esta mensagem é o REGISTRO ESCRITO da ligação\n  * ⚠️ NUNCA adicione informações não conversadas\n  * ⚠️ Precisão é mais importante que completude\n  * ⚠️ Máximo 10-12 linhas de mensagem (incluindo apresentação)\n  * ⚠️ Foque em compromissos e ações\n  \n  ## FORMATO DE SAÍDA\n  \n  * Apenas a mensagem de follow-up\n  * Sem análise da transcrição\n  * Sem comentários sobre a ligação\n  * Direto ao paciente\n  \n  ## VERIFICAÇÕES IMPORTANTES\n  \n  * A mensagem inicia com apresentação da Maria?\n  * Todas as datas e horários estão corretos?\n  * Os valores mencionados conferem?\n  * As ações têm responsáveis claros?\n  * A mensagem confirma o essencial?\n  * Está clara e sem ambiguidades?\n  \n  ## QUANDO NÃO ENVIAR MENSAGEM\n  \n  * Ligação foi apenas engano\n  * Assunto 100% resolvido sem pendências\n  * Paciente explicitamente pediu para não enviar\n  * Conteúdo puramente médico/confidencial\n</observacoes-finais>\n\n# INFORMAÇÕES DO SISTEMA\n\n<informacoes-sistema>\n  **Data e Hora Atual**: {{ $now.format('FFFF') }}\n  **Tipo de Mensagem**: Follow-up de Ligação Telefônica\n  **Entrada**: Transcrição da conversa telefônica\n  **Objetivo**: Registro escrito do que foi acordado\n</informacoes-sistema>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        160
+      ],
+      "id": "b39a914a-6f47-41e0-b6e2-e2972c047cc7",
+      "name": "Agente de Follow-up de Chamada",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "b4082e10-d56d-41f7-9a4f-485dff1fe413",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        592
+      ],
+      "id": "3521a824-1317-4ab6-8abd-a31155349120",
+      "name": "Ligações"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -896,
+        592
+      ],
+      "id": "116a01a7-dd50-4d79-9386-70a4d5d61873",
+      "name": "Ligações WhatsApp"
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -768,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "dffe752b-1ba6-4147-b2a7-8960322617c2",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "1376e4fd-f4eb-43c8-940c-d4d87f0e1663",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Ferramentas Agente",
+        "height": 736,
+        "width": 1552,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        -688
+      ],
+      "id": "afacf879-be25-46c3-988e-326f5f0ee74a",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Follow-up pós-chamada",
+        "height": 432,
+        "width": 1552,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "3d239b72-76a4-48e6-89a3-9e8e1c4c4c66",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Gestão de ligações",
+        "height": 608,
+        "width": 1552,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "b1e4a827-a816-40ae-a9cf-829c525f8620",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Info4').item.json.url_chatwoot }}/api/v1/accounts/{{ $('Info4').item.json.id_conta }}/contacts/{{ $('Buscar ou criar contato3').item.json.contato.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "chatwootApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"custom_attributes\": {\n    \"permitir_chamadas_whatsapp\": {{ $('Info4').item.json.permissao_aceita }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        784
+      ],
+      "id": "a08d9974-9ab4-4d49-9044-6b68e5b8b709",
+      "name": "Atualizar permissão de ligação WhatsApp",
+      "credentials": {
+        "chatwootApi": {}
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -992,
+        -112
+      ],
+      "id": "d24fa1f4-41f5-49a4-8d3a-fe74cd6481f3",
+      "name": "Buscar histórico da conversa"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_historico_mensagens",
+          "mode": "list"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Buscar ou criar contato1').item.json.contato.phone_number }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "sort": {
+          "values": [
+            {
+              "column": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        -112
+      ],
+      "id": "30be3293-2315-4b87-b158-efd0fa04a561",
+      "name": "Buscar mensagens",
+      "credentials": {
+        "postgres": {}
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const historico = $input.all().map(({ json }) => {\n  if (json.message.type === 'human') {\n    return `Usuário: ${json.message.content}`;\n  }\n  return `Assistente: ${json.message.content}`;\n}).join('\\n\\n');\n\nreturn { historico };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "c629c21a-1f30-4e70-84bb-e4f680c51227",
+      "name": "Montar histórico"
+    },
+    {
+      "parameters": {
+        "content": "## 12. Gestão de ligações",
+        "height": 80,
+        "width": 288,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        -1328
+      ],
+      "id": "d112320e-c071-43bc-8dd6-7afffe155b42",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Configurar node Info!!",
+        "height": 208,
+        "width": 272,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "e7092e52-6905-4bce-8b6a-ebe10a2c152f",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40ff895f-f63f-4e4f-bba3-c7d803c277f1",
+              "name": "url_chatwoot",
+              "value": "<inserir url do seu chatwoot>",
+              "type": "string"
+            },
+            {
+              "id": "1b513343-9b6a-4f6e-a012-ed819bf34a31",
+              "name": "id_conta",
+              "value": "=1",
+              "type": "string"
+            },
+            {
+              "id": "d540447e-4fa3-46c0-bc53-1f63433b4a70",
+              "name": "id_inbox",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "8bf522a6-75fb-434a-854c-b736539309e1",
+              "name": "telefone",
+              "value": "={{ $json.headers['x-retell-user-number'] || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -784,
+        -112
+      ],
+      "id": "d5bfd704-692a-4470-a776-1bef5a244c3e",
+      "name": "Info1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "B3uXPbfJAnhFWXXx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/B3uXPbfJAnhFWXXx",
+          "cachedResultName": "<selecionar ou criar subworkflow 10. Buscar ou criar contato + conversa>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Info1').item.json.telefone }}",
+            "id_conta": "={{ $('Info1').item.json.id_conta }}",
+            "id_inbox": "={{ $('Info1').item.json.id_inbox }}",
+            "url_chatwoot": "={{ $('Info1').item.json.url_chatwoot }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_conta",
+              "displayName": "id_conta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_inbox",
+              "displayName": "id_inbox",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_chatwoot",
+              "displayName": "url_chatwoot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        -112
+      ],
+      "id": "de4bcdcb-a230-4628-8b09-e4ab21755ece",
+      "name": "Buscar ou criar contato1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "B3uXPbfJAnhFWXXx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/B3uXPbfJAnhFWXXx",
+          "cachedResultName": "<selecionar ou criar subworkflow 10. Buscar ou criar contato + conversa>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Info5').item.json.telefone }}",
+            "id_conta": "={{ $('Info5').item.json.id_conta }}",
+            "id_inbox": "={{ $('Info5').item.json.id_inbox }}",
+            "url_chatwoot": "={{ $('Info5').item.json.url_chatwoot }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_conta",
+              "displayName": "id_conta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_inbox",
+              "displayName": "id_inbox",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_chatwoot",
+              "displayName": "url_chatwoot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        160
+      ],
+      "id": "fb794f11-3db3-4b48-bc20-f161a9bb68d7",
+      "name": "Buscar ou criar contato2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "B3uXPbfJAnhFWXXx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/B3uXPbfJAnhFWXXx",
+          "cachedResultName": "<selecionar ou criar subworkflow 10. Buscar ou criar contato + conversa>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Info4').item.json.telefone }}",
+            "id_conta": "={{ $('Info4').item.json.id_conta }}",
+            "id_inbox": "={{ $('Info4').item.json.id_inbox }}",
+            "url_chatwoot": "={{ $('Info4').item.json.url_chatwoot }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_conta",
+              "displayName": "id_conta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_inbox",
+              "displayName": "id_inbox",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_chatwoot",
+              "displayName": "url_chatwoot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        784
+      ],
+      "id": "f1b581d8-893f-4156-9699-c8735e935766",
+      "name": "Buscar ou criar contato3"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Zc4w9sIZSsbJwDW4",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Zc4w9sIZSsbJwDW4",
+          "cachedResultName": "<selecionar ou criar subworkflow 06. Integração Asaas>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cobranca_valor": "={{ $('Info').item.json.cobranca_valor }}",
+            "cobranca_vencimento": "={{ $('Info').item.json.cobranca_vencimento }}",
+            "telefone": "={{ $('Info').item.json.telefone }}",
+            "nome": "={{ $('Info').item.json.nome }}",
+            "cpf": "={{ $('Info').item.json.cpf }}",
+            "id_conta": "={{ $('Info').item.json.id_conta }}",
+            "id_contato": "={{ $('Buscar ou criar contato').item.json.contato.id }}",
+            "asaas_id_cliente": "={{ $('Buscar ou criar contato').item.json.contato.custom_attributes.asaas_id_cliente }}",
+            "asaas_id_cobranca": "={{ $('Buscar ou criar contato').item.json.contato.custom_attributes.asaas_id_cobranca }}",
+            "url_chatwoot": "={{ $('Info').item.json.url_chatwoot }}",
+            "url_asaas": "={{ $('Info').item.json.url_asaas }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cobranca_valor",
+              "displayName": "cobranca_valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "cobranca_vencimento",
+              "displayName": "cobranca_vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "cpf",
+              "displayName": "cpf",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_conta",
+              "displayName": "id_conta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_contato",
+              "displayName": "id_contato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "asaas_id_cliente",
+              "displayName": "asaas_id_cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "asaas_id_cobranca",
+              "displayName": "asaas_id_cobranca",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_chatwoot",
+              "displayName": "url_chatwoot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "url_asaas",
+              "displayName": "url_asaas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        -368
+      ],
+      "id": "46ccb09c-a4d8-4218-bf50-5037ef048bf5",
+      "name": "Criar ou buscar cobrança2"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Dial callerId=\"{{ $json.contato }}\">\n    <Sip>sip:{{ $json.telefone_whatsapp }}@sip.retellai.com;transport=tcp?x-call_direction={{ $json.tipo_ligacao }}</Sip>\n  </Dial>\n</Response>",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/xml"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -464,
+        592
+      ],
+      "id": "e303a304-87b6-40dd-be55-bb2c807e0f81",
+      "name": "Redirecionar ligação WhatsApp"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Dial callerId=\"{{ $json.contato }}\">\n    <Sip username=\"{{ $json.usuario }}\" password=\"{{ $json.senha }}\">sip:{{ $json.telefone }}@sip.retellai.com;transport=tcp?x-call_direction={{ $json.tipo_ligacao }}</Sip>\n  </Dial>\n</Response>",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/xml"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        592
+      ],
+      "id": "66680946-e90a-416e-b580-372734d5ef71",
+      "name": "Redirecionar ligação"
+    },
+    {
+      "parameters": {
+        "description": "Use essa ferramenta para refletir sobre algo. Ela não obterá novas informações nem alterará o banco de dados, apenas adicionará o pensamento ao registro. Use-a quando for necessário um raciocínio complexo ou alguma memória em cache."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        320
+      ],
+      "id": "c0b21fd5-3190-4244-bbef-288940317e41",
+      "name": "Refletir"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        -624
+      ],
+      "id": "3550bbeb-6d96-4f0e-b418-041586e7410a",
+      "name": "Buscar agendamentos do contato"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        -624
+      ],
+      "id": "c0ce2a51-3bf0-4587-a14d-6816d367147d",
+      "name": "Criar agendamento"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -992,
+        -624
+      ],
+      "id": "1693c101-0930-458b-ac5e-b001efa160ab",
+      "name": "Buscar janelas disponíveis"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ZGnLV8lGj8wz8r2T",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ZGnLV8lGj8wz8r2T",
+          "cachedResultName": "<selecionar ou criar subworkflow 03. Buscar janelas disponíveis Google Calendar>"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tamanho_janela_minutos": 60,
+            "granularidade": 30,
+            "id_agenda": "={{ $json.body.id_agenda }}",
+            "periodo_inicio": "={{ $json.body.periodo_inicio }}",
+            "periodo_fim": "={{ $json.body.periodo_fim }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "periodo_inicio",
+              "displayName": "periodo_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "periodo_fim",
+              "displayName": "periodo_fim",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "id_agenda",
+              "displayName": "id_agenda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tamanho_janela_minutos",
+              "displayName": "tamanho_janela_minutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "granularidade",
+              "displayName": "granularidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "amostras",
+              "displayName": "amostras",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -784,
+        -624
+      ],
+      "id": "f6d36cd3-15d0-425b-b5e2-d5050ae8afe7",
+      "name": "Buscar janelas disponíveis1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -768,
+        880
+      ],
+      "id": "306faab0-5fa5-4a93-b107-979a9d88c46a",
+      "name": "WhatsApp Twilio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Info4').item.json.url_chatwoot }}/twilio/callback",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('WhatsApp Twilio').item.json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        976
+      ],
+      "id": "b28ef630-27e8-4076-a52c-433b66e7783d",
+      "name": "Enviar para o Chatwoot"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "08f98640-66a6-49d4-af4f-74cc89048425",
+              "leftValue": "={{ $('WhatsApp Twilio').item.json.body.Body }}",
+              "rightValue": "VOICE_CALL_REQUEST",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        880
+      ],
+      "id": "d373f81c-748e-4680-a475-36cc89417cc2",
+      "name": "Permissão de ligação?"
+    },
+    {
+      "parameters": {
+        "content": "## Quer entender como funciona?\n\n\n### Assista o vídeo, deixe um like, e se inscreva no canal para ter acesso a mais workflows como esse!\n\n[![Vídeo YouTube Secretária v3](https://i1.ytimg.com/vi_webp/U3Qx-ayR7To/maxresdefault.webp)](https://www.youtube.com/watch?v=U3Qx-ayR7To)",
+        "height": 440,
+        "width": 500,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        -1232
+      ],
+      "id": "991a8b40-b1f1-438a-a6b7-07f195adf0f7",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## [Clique aqui e entre agora para tirar suas dúvidas](https://lucasmoreira.fazer.ai)\n[![Banner comunidade](https://framerusercontent.com/images/KIXMxk9eKCoCsNeVm1oaz5HnaQ.png)](https://lucasmoreira.fazer.ai)",
+        "height": 440,
+        "width": 1380,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1248,
+        -1232
+      ],
+      "id": "b33a4aac-ad10-4caa-847b-41d332abe2d4",
+      "name": "Sticky Note36"
+    },
+    {
+      "parameters": {
+        "content": "# Checklist - Gestão de ligações\n\n- [ ] [Clique aqui pra criar sua conta no Twilio](https://console.twilio.com)\n- [ ] Abrir node do Chatwoot para selecionar credencial\n- [ ] Configurar node \"Info2\" (telefone no WhatsApp Oficial)\n- [ ] Configurar node \"Info3\" (telefone normal)\n- [ ] Configurar node \"Info4\"\n- [ ] Configurar subworkflow \"Buscar ou criar contato\"\n\nObs.: Os telefones devem ser os mesmos do Workflow 13 - Agente de Recuperação de Leads\n",
+        "height": 288,
+        "width": 528,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        768
+      ],
+      "id": "0c997ae5-159a-4737-b184-d44f3e90b362",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "# Checklist - Follow-up pós-chamada\n- [ ] Abrir nodes da OpenAI, Postgres, e Chatwoot para selecionar credenciais\n- [ ] Configurar node \"Info5\"\n- [ ] Subworkflow \"Buscar ou criar contato\" -> Workflow 10\n",
+        "width": 624,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1584,
+        144
+      ],
+      "id": "02379ae0-c912-48b0-86d0-708b5bf9f3f2",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06da40d7-221a-4c03-b520-f84ef71722da",
+              "name": "telefone_whatsapp",
+              "value": "<inserir telefone para ligações de whatsapp, includindo +55>",
+              "type": "string"
+            },
+            {
+              "id": "adf526c3-eb09-43c4-a73f-7fcbf15954f0",
+              "name": "usuario",
+              "value": "retell",
+              "type": "string"
+            },
+            {
+              "id": "d31238f6-cf64-4cac-bbcb-a3ccc63adf72",
+              "name": "senha",
+              "value": "<sua senha sip>",
+              "type": "string"
+            },
+            {
+              "id": "de53b709-c1b0-49ee-bdef-01c699c35c5f",
+              "name": "contato",
+              "value": "={{ $json.body.Direction === 'inbound' ? $json.body.From.split(':').last() : $json.body.To.split(':').last() }}",
+              "type": "string"
+            },
+            {
+              "id": "7fc606c5-0f0e-480c-925a-09bdf1a30a7e",
+              "name": "tipo_ligacao",
+              "value": "={{ $json.body.Direction === 'inbound' ? 'inbound' : 'outbound' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -688,
+        592
+      ],
+      "id": "469bde21-d58e-4508-90ab-2324eba28a5c",
+      "name": "Info2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06da40d7-221a-4c03-b520-f84ef71722da",
+              "name": "telefone",
+              "value": "<inserir telefone para ligações de telefone, includindo +55>",
+              "type": "string"
+            },
+            {
+              "id": "2d98e675-ac1d-4b37-acec-f85926e4f59f",
+              "name": "usuario",
+              "value": "retell",
+              "type": "string"
+            },
+            {
+              "id": "4f426fba-3e91-4b25-add1-c115bdc9d7bc",
+              "name": "senha",
+              "value": "<sua senha sip>",
+              "type": "string"
+            },
+            {
+              "id": "a9f26363-d795-497c-a47a-1a2eb572cace",
+              "name": "contato",
+              "value": "={{ $json.body.Direction === 'inbound' ? $json.body.From : $json.body.To }}",
+              "type": "string"
+            },
+            {
+              "id": "33c4d7c5-22e5-4a4b-b9ef-cb6f26e40a51",
+              "name": "tipo_ligacao",
+              "value": "={{ $json.body.Direction === 'inbound' ? 'inbound' : 'outbound' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        592
+      ],
+      "id": "d557f721-19d8-403d-8a34-ae39fe818c94",
+      "name": "Info3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "19c17a70-6a49-4032-b8e4-42635fea6f04",
+              "name": "id_conta",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "487547fa-fb02-4da9-9168-50d074a3cf26",
+              "name": "id_inbox",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "f74bf6d4-1a71-4e62-b726-ee3a4059f37c",
+              "name": "url_chatwoot",
+              "value": "<inserir url do seu chatwoot>",
+              "type": "string"
+            },
+            {
+              "id": "a3edd128-eaa3-479d-a644-f4004c193c7a",
+              "name": "telefone",
+              "value": "=+{{ $('WhatsApp Twilio').item.json.body.WaId }}",
+              "type": "string"
+            },
+            {
+              "id": "ffad67bd-f2bd-4529-9907-bf870681a33e",
+              "name": "permissao_aceita",
+              "value": "={{ $('WhatsApp Twilio').item.json.body.ButtonPayload === 'ACCEPTED' }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        880
+      ],
+      "id": "3a074a65-fbd2-453b-b7cb-22632f5bc4f8",
+      "name": "Info4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "19c17a70-6a49-4032-b8e4-42635fea6f04",
+              "name": "id_conta",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "487547fa-fb02-4da9-9168-50d074a3cf26",
+              "name": "id_inbox",
+              "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "f74bf6d4-1a71-4e62-b726-ee3a4059f37c",
+              "name": "url_chatwoot",
+              "value": "<inserir url do seu chatwoot>",
+              "type": "string"
+            },
+            {
+              "id": "a3edd128-eaa3-479d-a644-f4004c193c7a",
+              "name": "telefone",
+              "value": "={{ $('Follow-up no WhatsApp após chamada').item.json.body.call.direction === 'outbound' ? $('Follow-up no WhatsApp após chamada').item.json.body.call.to_number : $('Follow-up no WhatsApp após chamada').item.json.body.call.from_number }}",
+              "type": "string"
+            },
+            {
+              "id": "01a54a64-d357-447f-84d1-5979d308ee36",
+              "name": "transcricao",
+              "value": "={{ $('Follow-up no WhatsApp após chamada').item.json.body.call.transcript }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        160
+      ],
+      "id": "909c3a29-6952-40a3-8f86-64fc025cd56d",
+      "name": "Info5"
+    },
+    {
+      "parameters": {
+        "content": "# Checklist - Retell\n\n[Clique aqui pra criar sua conta no Retell](https://dashboard.retellai.com/?ref=n8n-sec-v3)\n\n## Ferramentas Agente\n- [ ] Abrir nodes do Google Calendar, Chatwoot, e Postgres para selecionar credenciais\n- [ ] Configurar node \"Info\"\n- [ ] Configurar node \"Info1\"\n- [ ] Subworkflow \"Buscar janelas disponíveis\" -> Workflow 03\n- [ ] Subworkflow \"Criar evento\" -> Workflow 04\n- [ ] Subworkflow \"Buscar ou criar contato\" -> Workflow 10\n- [ ] Subworkflow \"Criar ou buscar cobrança\" -> Workflow 06\n",
+        "height": 368,
+        "width": 576,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        -512
+      ],
+      "id": "cc88429e-66d3-463d-800c-4b94260a4d8e",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "[![Retell logo](https://cdn.prod.website-files.com/64ada0f2685b2d18caa5e699/659b48b3a5a026456e8bd918_logo-white.png)](https://dashboard.retellai.com/?ref=n8n-sec-v3)",
+        "height": 96,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1296,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "adb155a6-e1e3-45e3-9107-8846f7cbdf17",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Usei Hostinger pra este workflow.\n## Replique aqui.\n\n\n\n\n\n\n\n\n\n## [Use o cupom `FAZERAI` pra ter 10% de desconto na sua primeira compra!](https://www.hostg.xyz/SHIMV)\n\n\n",
+        "height": 316,
+        "width": 552,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        -784
+      ],
+      "id": "a2ff7060-1453-4c8c-885f-639adc49138d",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "content": "## Número para WhatsApp? Salvy\n\n\n\n## [Ative seu número](https://use.salvy.com.br/lucas-moreira)\n\n\n",
+        "height": 188,
+        "width": 440,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        560
+      ],
+      "id": "0d92e5bc-fb73-4bca-ae8b-f562efb971e0",
+      "name": "Sticky Note22"
+    },
+    {
+      "parameters": {
+        "content": "[![Salvy](https://framerusercontent.com/images/dF05SiMwnxfXjHsnkGqZ4Up7ZIg.webp?width=120&height=65)](https://use.salvy.com.br/lucas-moreira)\n",
+        "height": 96,
+        "width": 150,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        624
+      ],
+      "id": "228bc603-7a3e-4fa6-829e-8539791fb705",
+      "name": "Sticky Note28"
+    },
+    {
+      "parameters": {
+        "content": "[![Hostinger](https://framerusercontent.com/images/ptGVDA4KqG8GLNlWRDzFxaM.png?width=600&height=119)](https://www.hostg.xyz/SHIMV)\n",
+        "height": 96,
+        "width": 324,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2208,
+        -672
+      ],
+      "id": "3964ea1a-701c-446c-b53f-12bf11ae851d",
+      "name": "Sticky Note29"
+    },
+    {
+      "parameters": {
+        "content": "[![fazer.ai](https://framerusercontent.com/images/HqY9djLTzyutSKnuLLqBr92KbM.png?scale-down-to=256)](https://fazer.ai?utm_source=n8n&utm_campaign=sec-v3)\n\n## Esse é um template faça você mesmo do canal\n## Lucas Moreira\n\n### Inscreva-se no nosso canal no YouTube\n[![YouTube Lucas Moreira](https://img.shields.io/youtube/channel/subscribers/UCtmp6SxzLscu0GRTbgM8FTw?style=flat-square&logo=youtube&label=Inscreva-se&color=f00)](https://youtube.com/@eulucassmoreira?si=0lH7hwX9pukjhmPQ)\n[![Instagram](https://img.shields.io/badge/instagram-black?logo=instagram&style=for-the-badge)](https://instagram.com/eulucassmoreira)\n[![GitHub fazer.ai](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white&label)](https://github.com/fazer-ai)\n",
+        "height": 440,
+        "width": 550,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        -1232
+      ],
+      "id": "1619a6e7-d090-4e50-99dd-a5e4c7630c15",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "@[youtube](BTu3-aXV5Pg)",
+        "height": 224,
+        "width": 368,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -1232
+      ],
+      "id": "a82bfc46-8582-4842-a8ed-9ddd37aeae03",
+      "name": "Sticky Note17"
+    }
+  ],
+  "connections": {
+    "Follow-up no WhatsApp após chamada": {
+      "main": [
+        [
+          {
+            "node": "Chamada encerrada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info": {
+      "main": [
+        [
+          {
+            "node": "Buscar ou criar contato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar ou criar contato": {
+      "main": [
+        [
+          {
+            "node": "Criar ou buscar cobrança2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nova cobrança?": {
+      "main": [
+        [
+          {
+            "node": "Enviar notificação cobrança",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ignorar busca de cobrança existente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar ou buscar cobrança": {
+      "main": [
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamada encerrada?": {
+      "main": [
+        [
+          {
+            "node": "Info5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ignorar outros eventos de chamada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente de Follow-up de Chamada",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente de Follow-up de Chamada",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar notificação cobrança": {
+      "main": [
+        [
+          {
+            "node": "Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente de Follow-up de Chamada": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensagem follow-up chamada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ligações": {
+      "main": [
+        [
+          {
+            "node": "Info3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ligações WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Info2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar histórico da conversa": {
+      "main": [
+        [
+          {
+            "node": "Info1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar mensagens": {
+      "main": [
+        [
+          {
+            "node": "Montar histórico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info1": {
+      "main": [
+        [
+          {
+            "node": "Buscar ou criar contato1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar ou criar contato1": {
+      "main": [
+        [
+          {
+            "node": "Buscar mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar ou criar contato2": {
+      "main": [
+        [
+          {
+            "node": "Agente de Follow-up de Chamada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar ou criar contato3": {
+      "main": [
+        [
+          {
+            "node": "Atualizar permissão de ligação WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar ou buscar cobrança2": {
+      "main": [
+        [
+          {
+            "node": "Nova cobrança?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refletir": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente de Follow-up de Chamada",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar agendamentos do contato": {
+      "main": [
+        [
+          {
+            "node": "Buscar eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar agendamento": {
+      "main": [
+        [
+          {
+            "node": "Criar evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar janelas disponíveis": {
+      "main": [
+        [
+          {
+            "node": "Buscar janelas disponíveis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Twilio": {
+      "main": [
+        [
+          {
+            "node": "Info4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Permissão de ligação?": {
+      "main": [
+        [
+          {
+            "node": "Buscar ou criar contato3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar para o Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info2": {
+      "main": [
+        [
+          {
+            "node": "Redirecionar ligação WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info3": {
+      "main": [
+        [
+          {
+            "node": "Redirecionar ligação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info4": {
+      "main": [
+        [
+          {
+            "node": "Permissão de ligação?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info5": {
+      "main": [
+        [
+          {
+            "node": "Buscar ou criar contato2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "936a763e3bf4f68eafc951654ad1b8930511c3731cb9e74c28a4773b3e4d1984"
+  }
+}

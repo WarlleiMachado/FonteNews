@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2025-09-29T05:24:53.944Z",
+  "results": [
+    {
+      "id": "8COwk6X80udVGdGuqS2Q",
+      "email": "secretaria.adfdevidalaranjeiras@gmail.com",
+      "hasFirebaseUid": false,
+      "firebaseUid": null,
+      "matchedAuth": false,
+      "authLocalId": null
+    },
+    {
+      "id": "LCBPRZr3mdEQAoEkpi88",
+      "email": "fontedevidalaranjeiras@gmail.com",
+      "hasFirebaseUid": false,
+      "firebaseUid": null,
+      "matchedAuth": false,
+      "authLocalId": null
+    },
+    {
+      "id": "TX81hye4NPnL55BaX8FZ",
+      "email": "dudadapan@gmail.com",
+      "hasFirebaseUid": false,
+      "firebaseUid": null,
+      "matchedAuth": false,
+      "authLocalId": null
+    },
+    {
+      "id": "gQWkrrpCKtCizVOT1KRI",
+      "email": "machado.warllei@gmail.com",
+      "hasFirebaseUid": false,
+      "firebaseUid": null,
+      "matchedAuth": false,
+      "authLocalId": null
+    },
+    {
+      "id": "test-deploy-20250929021751",
+      "email": "deploy-test+20250929021751@fonte-news.local",
+      "hasFirebaseUid": true,
+      "firebaseUid": "xXkFw4KlD8XjqVbmJOmeqp6xU2z1",
+      "matchedAuth": false,
+      "authLocalId": null
+    }
+  ]
+}

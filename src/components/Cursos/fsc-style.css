@@ -1,0 +1,101 @@
+/* Container Principal */
+.fsc-container { position: relative; width: 100%; height: 350px; overflow: hidden; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; border-radius: 13px; box-shadow: 0 15px 20px rgba(31,45,61,.2); }
+/* Variante sem bordas arredondadas (Home) */
+.fsc-container.no-rounded { border-radius: 0; }
+.fsc-container.no-rounded .fsc-page { border-radius: 0; overflow: visible; }
+#fsc_magic-dust { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.fsc-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(20px) brightness(0.6); transform: scale(1.1); transition: background-image 1s ease-in-out; z-index: 0; }
+.fsc-content { position: relative; z-index: 2; display: flex; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; height: 100%; padding: 0 40px; box-sizing: border-box; }
+
+/* Área de Texto e Animação */
+.fsc-text-area { width: calc(100% - 650px); float: left; padding-left: 5%; z-index: 10; position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+/* Transições dos textos (saída para esquerda e entrada do novo) */
+.fsc-text-wrapper {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: opacity, transform;
+}
+.fsc-text-wrapper.is-exiting {
+  opacity: 0;
+  transform: translateX(-32px);
+}
+.fsc-text-wrapper.is-entering {
+  opacity: 0;
+  transform: translateX(32px);
+}
+.fsc-category { position: relative; text-shadow: 0 2px 2px rgba(0,0,0,.3); opacity: .75; margin-bottom: 25px; }
+.fsc-category:after { content: ""; display: block; left: 0; bottom: -8px; height: 1px; width: 30px; position: absolute; background: currentColor; opacity: .3; }
+.fsc-container .fsc-title { font-weight: 400; font-size: 28px; text-shadow: 0 3px 5px rgba(0,0,0,.3); margin: 0 0 30px 0; color: #fff; }
+.fsc-read-more { font-size: 15px; display: inline-flex; text-decoration: none; color: #fff; border: 1px solid rgba(255,255,255,.2); align-items: center; height: 2.5em; padding: 0 1.3em 0 .9em; border-radius: 9em; text-shadow: none; box-shadow: 0 5px 10px #0003; transition: .35s; }
+.fsc-read-more:hover { transform: translateX(1em); }
+.background_shining { background-repeat: no-repeat; animation: fsc_background_shining 4s linear infinite; background-size: 20em 100%; background-position: -20em 0; background-image: linear-gradient(135deg, hsla(0,0%,100%,0) 10%,hsla(0,0%,100%,.5) 18%,hsla(0,0%,100%,0) 18%,hsla(0,0%,100%,0) 19.5%,#fff 20%,hsla(0,0%,100%,0) 20.5%,hsla(0,0%,100%,0) 29.6%,hsla(0,0%,100%,.5) 30.4%,hsla(0,0%,100%,0) 30.6%); }
+@keyframes fsc_background_shining { 0% { background-position: -20em 0; } to { background-position: 21em 0; } }
+
+/* Área de Imagem (Coverflow) - ATUALIZADO */
+.fsc-image-area { width: 650px; float: left; height: 100%; perspective: 450px; user-select: none; /* Impede a seleção de texto ao arrastar */ }
+.fsc-image-wrapper { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; display: flex; align-items: center; justify-content: center; cursor: grab; /* Mãozinha aberta */ }
+.fsc-image-wrapper.is-dragging { cursor: grabbing; /* Mãozinha fechada */ }
+.fsc-page { position: absolute; width: 280px; height: 250px; transition: transform 0.7s ease, opacity 0.5s ease, z-index 0s ease 0.35s, box-shadow 0.7s ease; border-radius: 13px; overflow: hidden; }
+.fsc-card { display: block; width: 100%; height: 100%; border-radius: 13px; background-position: center; background-size: cover; position: relative; pointer-events: none; /* Impede que o card capture eventos do mouse, que devem ir para o wrapper */ }
+
+/* Posições dos Slides */
+.fsc-page.current { z-index: 4; transform: translateX(0) translateZ(0) rotateY(0); }
+ .fsc-page.current .fsc-card { box-shadow: 0 8px 15px rgba(0,0,0,.4), 60px 0 20px -30px rgba(0,0,0,.5), -60px 0 20px -30px rgba(0,0,0,.5); }
+.fsc-page.past0 { z-index: 3; transform: translateX(-45%) translateZ(-150px) rotateY(45deg); }
+.fsc-page.past1 { z-index: 2; opacity: .5; transform: translateX(-60%) translateZ(-200px) rotateY(45deg); }
+.fsc-page.future0 { z-index: 3; transform: translateX(45%) translateZ(-150px) rotateY(-45deg); }
+.fsc-page.future1 { z-index: 2; opacity: .5; transform: translateX(60%) translateZ(-200px) rotateY(-45deg); }
+.fsc-page.hidden { z-index: 0; transform: scale(0); opacity: 0; }
+
+/* Navegação (Setas) */
+.fsc-navigator > div { position: absolute; width: 80px; height: 80px; top: calc(50% - 40px); z-index: 5; cursor: pointer; background: rgba(255, 255, 255, 0.7); color: #E65100; border-radius: 13px; opacity: 0; transition: .25s; display: flex; justify-content: center; align-items: center; }
+.fsc-container:hover .fsc-navigator > div { opacity: .7; }
+.fsc-navigator > div:hover { opacity: 1; background: rgba(255, 255, 255, 0.4); }
+.fsc-navigator > div svg { width: 32px; height: 32px; stroke: currentColor; fill: none; }
+.fsc-navigator .fsc-next { right: 0; transform: rotate(-45deg) translateX(60px) translateY(60px); }
+.fsc-container:hover .fsc-navigator .fsc-next { transform: rotate(-45deg) translateX(40px) translateY(40px); }
+.fsc-navigator .fsc-next > svg { transform: rotate(45deg); }
+.fsc-navigator .fsc-prev { left: 0; transform: rotate(45deg) translateX(-60px) translateY(60px); }
+.fsc-container:hover .fsc-navigator .fsc-prev { transform: rotate(45deg) translateX(-40px) translateY(40px); }
+.fsc-navigator .fsc-prev > svg { transform: rotate(-45deg); }
+
+/* Email Display */
+.fsc-email-display { position: absolute; bottom: 20px; left: 20px; z-index: 10; font-size: 14px; }
+.fsc-email-display a { text-decoration: none; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+/* Popup (Lightbox) */
+.fsc-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0s 0.3s; }
+.fsc-popup-overlay.is-visible { opacity: 1; visibility: visible; transition: opacity 0.3s, visibility 0s; }
+.fsc-popup-content { position: relative; max-width: 90%; max-height: 90%; }
+.fsc-popup-content img { display: block; max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+/* Estilos para os botões do Popup */
+.fsc-popup-actions { position: fixed; top: 20px; right: 20px; display: flex; gap: 15px; z-index: 10000; }
+.fsc-popup-actions a i { transition: .5s; color: #fff; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+.fsc-popup-actions a i svg { width: 20px; height: 20px; }
+.fsc-popup-open-link i { background: -webkit-radial-gradient(75% 25%, circle farthest-corner, #9bd330 0, #67C23A 100%); background: radial-gradient(circle farthest-corner at 75% 25%, #9bd330 0, #67C23A 100%); box-shadow: 0 10px 10px -2px rgba(103, 194, 58, .6); }
+.fsc-popup-close-action i { background: -webkit-radial-gradient(75% 25%, circle farthest-corner, #ff7a60 0, #e6162d 100%); background: radial-gradient(circle farthest-corner at 75% 25%, #ff7a60 0, #e6162d 100%); box-shadow: 0 10px 10px -2px rgba(255, 73, 73, .6); }
+
+/* Responsividade */
+@media (max-width: 991px) {
+    .fsc-container { height: auto; box-shadow: none; border-radius: 0; }
+    .fsc-content { flex-direction: column-reverse; padding: 0; }
+    .fsc-image-area { position: relative; width: 100%; height: 320px; float: none; margin-top: 24px; }
+    .fsc-text-area { width: 100%; float: none; text-align: center; padding: 30px 20px; height: auto; }
+    .fsc-text-wrapper { position: relative; }
+    .fsc-category:after { left: 50%; margin-left: -15px; }
+    .fsc-title { font-size: 22px; }
+    .fsc-page { width: 240px; height: 210px; }
+    .fsc-page.current { transform: translateX(0) translateZ(0) rotateY(0) scale(1.08); }
+    .fsc-navigator, .fsc-email-display { display: none; }
+}
+
+/* Crossfade suave para camadas de fundo do slider de cursos */
+.fsc-background {
+  transition: opacity 600ms ease-in-out, background-image 1000ms ease-in-out;
+}
+/* Estado final (padrão): curr visível, prev oculto */
+.fsc-background.bg-prev { opacity: 0; }
+.fsc-background.bg-curr { opacity: 1; }
+/* Durante transição: prev visível, curr oculto; ao sair, anima para estado final */
+.fsc-container.is-fading .fsc-background.bg-prev { opacity: 1; }
+.fsc-container.is-fading .fsc-background.bg-curr { opacity: 0; }

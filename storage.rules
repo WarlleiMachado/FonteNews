@@ -1,0 +1,111 @@
+rules_version = '2';
+
+// Craft rules based on data in your Firestore database
+// allow write: if firestore.get(
+//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Imagens
+    // Permitir que cada usuário autenticado envie a própria foto de perfil
+    match /images/avatars/{authorizedUserId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.authorizedUserId == authorizedUserId;
+    }
+
+    match /images/{allPaths=**} {
+      // Leitura pública
+      allow read: if true;
+      // Escrita: somente admins autenticados
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        // Verificação de role 'admin' via documento /users/{uid}
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Galeria de imagens acessível a criadores (admin, editor, leader)
+    match /images/galeria/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        // Permitir também editores e líderes via role em /users/{uid}
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['admin', 'editor', 'leader']
+      );
+    }
+
+    // Uploads de imagens por usuários autorizados (não-admin), isolados por pasta do usuário
+    match /images/uploads/{authorizedUserId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.authorizedUserId == authorizedUserId;
+    }
+
+    // Documentos
+    match /documents/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Versões da Bíblia (JSON)
+    match /bible/versions/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    
+
+    // Anúncios (se usado um prefixo separado)
+    match /announcements/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Áudios
+    match /audio/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Imagens do Modo Manutenção - permitir upload apenas para admins
+    match /maintenance-images/{allPaths=**} {
+      allow read: if true; // Leitura pública para todos poderem ver a imagem
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'fontedevidalaranjeiras@gmail.com' ||
+        request.auth.token.email == 'secretaria.adfdevidalaranjeiras@gmail.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // Default: negar
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
