@@ -19,7 +19,7 @@ app.use(morgan('dev'))
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   host: process.env.PGHOST,
-  port: Number(process.env.PGPORT || 5432),
+  port: parseInt(process.env.PGPORT ?? '5432', 10),
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
   database: process.env.PGDATABASE
@@ -77,6 +77,24 @@ function requireRole(roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) return res.status(403).json({ error: 'forbidden' })
     next()
+  }
+}
+
+let dbReady = false
+
+async function connectWithRetry(maxRetries = 10, delayMs = 1000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const client = await pool.connect()
+      client.release()
+      dbReady = true
+      try { await runSchema() } catch (e) { /* schema opcional; não derruba servidor */ }
+      return
+    } catch (err) {
+      dbReady = false
+      await new Promise(r => setTimeout(r, delayMs))
+      delayMs = Math.min(delayMs * 2, 10000)
+    }
   }
 }
 
@@ -178,27 +196,10 @@ app.get('/me', authMiddleware, async (req, res) => {
   res.json({ user: { id: req.user.id, email: req.user.email, name: req.user.name, role: req.user.role } })
 })
 
-const port = Number(process.env.PORT || 3000)
+const port = parseInt(process.env.PORT ?? '3000', 10)
 
 (async () => {
   await connectWithRetry()
   await ensureAdmin()
   app.listen(port, () => {})
 })()
-let dbReady = false
-
-async function connectWithRetry(maxRetries = 10, delayMs = 1000) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const client = await pool.connect()
-      client.release()
-      dbReady = true
-      try { await runSchema() } catch (e) { /* schema opcional; não derruba servidor */ }
-      return
-    } catch (err) {
-      dbReady = false
-      await new Promise(r => setTimeout(r, delayMs))
-      delayMs = Math.min(delayMs * 2, 10000)
-    }
-  }
-}
