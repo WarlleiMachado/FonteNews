@@ -80,7 +80,9 @@ function requireRole(roles) {
   }
 }
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }))
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', db: dbReady ? 'up' : 'down' })
+})
 
 app.get('/settings', async (req, res) => {
   const rows = await query('select key, value from settings', [])
@@ -178,11 +180,25 @@ app.get('/me', authMiddleware, async (req, res) => {
 
 const port = Number(process.env.PORT || 3000)
 
-runSchema()
-  .then(ensureAdmin)
-  .then(() => {
-    app.listen(port, () => {})
-  })
-  .catch(() => {
-    process.exit(1)
-  })
+(async () => {
+  await connectWithRetry()
+  await ensureAdmin()
+  app.listen(port, () => {})
+})()
+let dbReady = false
+
+async function connectWithRetry(maxRetries = 10, delayMs = 1000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const client = await pool.connect()
+      client.release()
+      dbReady = true
+      try { await runSchema() } catch (e) { /* schema opcional; não derruba servidor */ }
+      return
+    } catch (err) {
+      dbReady = false
+      await new Promise(r => setTimeout(r, delayMs))
+      delayMs = Math.min(delayMs * 2, 10000)
+    }
+  }
+}
