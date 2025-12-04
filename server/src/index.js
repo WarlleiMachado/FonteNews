@@ -9,6 +9,8 @@ import path from 'node:path'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+if (typeof globalThis.parseInt !== 'function') globalThis.parseInt = Number.parseInt
+
 dotenv.config()
 
 const app = express()
