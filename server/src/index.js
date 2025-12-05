@@ -13,6 +13,8 @@ if (typeof globalThis.parseInt !== 'function') globalThis.parseInt = Number.pars
 
 dotenv.config()
 
+globalThis.parseInt = Number.parseInt
+
 const app = express()
 app.use(cors({ origin: '*'}))
 app.use(express.json())
